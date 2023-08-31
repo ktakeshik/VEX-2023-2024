@@ -54,22 +54,22 @@ namespace Constants {
 
     namespace Catapult {
         //Motors
-        const int MP_CATAPULT = 4;
+        const int MP_CATAPULT = 2;
         const bool M_CATAPULT_REVERSED = false;
-        const pros::motor_brake_mode_e_t M_CATAPULT_BRAKE_MODE = pros::E_MOTOR_BRAKE_BRAKE;
+        const pros::motor_brake_mode_e_t M_CATAPULT_BRAKE_MODE = pros::E_MOTOR_BRAKE_COAST;
 
         //Sensors
-        const int SP_ROTATION = 6;
+        const int SP_ROTATION = 7;
         const bool S_ROTATION_REVERSED = false;
 
         const float CATAPULT_MINIMUM_ANGLE = 30500;
-        const float CATAPUL_MAXIMUM_ANGLE = 30000;
+        const float CATAPUL_MAXIMUM_ANGLE = 29500;
 
         const float CATAPULT_UP_ANGLE = 34000;
     }
 
     namespace Intake {
-        const int MP_INTAKE = 1;
+        const int MP_INTAKE = 6;
         const bool M_INTAKE_REVERSED = true;
         const pros::motor_brake_mode_e_t M_INTAKE_BRAKE_MODE = pros::E_MOTOR_BRAKE_COAST;
         
