@@ -16,9 +16,13 @@ class Catapult_Subsystem {
 
     bool isCatapultDown();
 
+    bool isCatapultUp();
+
     void catapultControl(pros::Controller controller, bool intakeOut);
 
-    void autoCatapultMovement(pros::Controller controller, bool intakeOut);
+    void autoCatapultMovement(bool intakeOut);
+
+    void loadCatapult(bool intakeOut);
 
     void printTask();
 };

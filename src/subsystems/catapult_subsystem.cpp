@@ -17,8 +17,13 @@ Catapult_Subsystem::Catapult_Subsystem ()
 }
 
 bool Catapult_Subsystem::isCatapultDown() {
-    return (s_rotation.get_angle() < CATAPULT_DOWN_ANLGE + CATAPUL_ANGLE_MARGIN &&
-        s_rotation.get_angle() > CATAPULT_DOWN_ANLGE - CATAPUL_ANGLE_MARGIN) ?
+    return (s_rotation.get_angle() < CATAPULT_MINIMUM_ANGLE &&
+        s_rotation.get_angle() > CATAPUL_MAXIMUM_ANGLE) ?
+        true : false;
+}
+
+bool Catapult_Subsystem::isCatapultUp() {
+    return (s_rotation.get_angle() > CATAPULT_UP_ANGLE) ?
         true : false;
 }
 
@@ -27,19 +32,32 @@ void Catapult_Subsystem::catapultControl(pros::Controller controller, bool intak
         return;
     }
     if (controller.get_digital(DIGITAL_R1)) {
-        m_catapult.move(127);
+        m_catapult.move(60);
         return;
     }
     m_catapult.brake();
 }
 
-void Catapult_Subsystem::autoCatapultMovement(pros::Controller controller, bool intakeOut) {
+void Catapult_Subsystem::autoCatapultMovement(bool intakeOut) {
     if (!intakeOut) {
         return;
     }
-    m_catapult.move(127);
-    pros::delay(100);
+
+    while(!isCatapultUp()) {
+        m_catapult.move(127);
+        pros::delay(20);  
+    }
+    
+    m_catapult.brake();
+}
+
+void Catapult_Subsystem::loadCatapult(bool intakeOut) {
+    if (!intakeOut) {
+        return;
+    }
+    
     while(!isCatapultDown()) {
+        m_catapult.move(110);
         pros::delay(20);
     }
     m_catapult.brake();

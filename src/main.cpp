@@ -74,12 +74,17 @@ void autonomous() {}
 void opcontrol() {
 	pros::Task teleOp{[] {
 		pros::Controller master(pros::E_CONTROLLER_MASTER);
+		
 		while(true)
 		{
-			s_Catapult.catapultControl(master, s_Intake.getExtensionStatus());
-			// if (master.get_digital(DIGITAL_R1)) {
-			// 	s_Catapult.autoCatapultMovement(master, s_Intake.getExtensionStatus());
-			// }
+			// s_Catapult.catapultControl(master, s_Intake.getExtensionStatus());
+			if (master.get_digital(DIGITAL_R1)) {
+				s_Catapult.autoCatapultMovement(s_Intake.getExtensionStatus());
+				pros::lcd::print(3, "ButtonPressed");
+			}
+			else if (!master.get_digital_new_press(DIGITAL_R1)) {
+				s_Catapult.loadCatapult(s_Intake.getExtensionStatus());
+			}
 			s_Drivetrain.joystickControl(master);
 			s_Drivetrain.flapsControl(master);
 			s_Elevation.elevationControl(master);
