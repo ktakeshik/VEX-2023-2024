@@ -43,12 +43,13 @@ void Catapult_Subsystem::autoCatapultMovement(bool intakeOut) {
         return;
     }
 
-    while(!isCatapultUp()) {
+    if (!isCatapultUp()) {
         m_catapult.move(127);
         pros::delay(20);  
     }
-    
-    m_catapult.brake();
+    else {
+        m_catapult.brake();
+    }
 }
 
 void Catapult_Subsystem::loadCatapult(bool intakeOut) {
@@ -56,11 +57,13 @@ void Catapult_Subsystem::loadCatapult(bool intakeOut) {
         return;
     }
     
-    while(!isCatapultDown()) {
+    if (!isCatapultDown()) {
         m_catapult.move(110);
         pros::delay(20);
     }
-    m_catapult.brake();
+    else {
+        m_catapult.brake();
+    }
 }
 
 void Catapult_Subsystem::continuosShoot(bool intakeOut, pros::Controller controller) {
@@ -68,7 +71,7 @@ void Catapult_Subsystem::continuosShoot(bool intakeOut, pros::Controller control
         return;
     }
 
-    while (controller.get_digital(DIGITAL_R2)) {
+    if (controller.get_digital(DIGITAL_R2)) {
 
         m_catapult.move(127);
 
@@ -85,7 +88,9 @@ void Catapult_Subsystem::continuosShoot(bool intakeOut, pros::Controller control
         //     pros::delay(20);  
         // }
     }
-    m_catapult.brake();
+    else {
+        m_catapult.brake();
+    }
 }
 
 void Catapult_Subsystem::printTask() 

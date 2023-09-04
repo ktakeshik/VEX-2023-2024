@@ -62,8 +62,8 @@ namespace Constants {
         const int SP_ROTATION = 6;
         const bool S_ROTATION_REVERSED = false;
 
-        const float CATAPULT_MINIMUM_ANGLE = 29500;
-        const float CATAPUL_MAXIMUM_ANGLE = 29800;
+        const float CATAPULT_MINIMUM_ANGLE = 30300;
+        const float CATAPUL_MAXIMUM_ANGLE = 29074;
 
         const float CATAPULT_UP_ANGLE = 34000;
     }
