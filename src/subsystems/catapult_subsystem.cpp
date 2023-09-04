@@ -63,6 +63,31 @@ void Catapult_Subsystem::loadCatapult(bool intakeOut) {
     m_catapult.brake();
 }
 
+void Catapult_Subsystem::continuosShoot(bool intakeOut, pros::Controller controller) {
+    if (!intakeOut) {
+        return;
+    }
+
+    while (controller.get_digital(DIGITAL_R2)) {
+
+        m_catapult.move(127);
+
+        // while(!isCatapultDown()) {
+        //     m_catapult.move(110);
+        //     pros::delay(20);
+        // }
+        // m_catapult.brake();
+
+        // pros::delay(0);
+
+        // while(!isCatapultUp()) {
+        //     m_catapult.move(127);
+        //     pros::delay(20);  
+        // }
+    }
+    m_catapult.brake();
+}
+
 void Catapult_Subsystem::printTask() 
 {
     pros::lcd::print(2, "LEFTMG: %i", s_rotation.get_angle());

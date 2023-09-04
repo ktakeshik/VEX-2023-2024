@@ -18,11 +18,15 @@ class Catapult_Subsystem {
 
     bool isCatapultUp();
 
+    bool hasCatapultLaunched();
+
     void catapultControl(pros::Controller controller, bool intakeOut);
 
     void autoCatapultMovement(bool intakeOut);
 
     void loadCatapult(bool intakeOut);
+
+    void continuosShoot(bool intakeOut, pros::Controller controller);
 
     void printTask();
 };

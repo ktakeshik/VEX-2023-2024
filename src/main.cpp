@@ -82,8 +82,12 @@ void opcontrol() {
 				s_Catapult.autoCatapultMovement(s_Intake.getExtensionStatus());
 				pros::lcd::print(3, "ButtonPressed");
 			}
-			else if (!master.get_digital_new_press(DIGITAL_R1)) {
+			else if (!master.get_digital_new_press(DIGITAL_R1) && !master.get_digital(DIGITAL_R2)) {
 				s_Catapult.loadCatapult(s_Intake.getExtensionStatus());
+			}
+			if (master.get_digital(DIGITAL_R2)) {
+				s_Catapult.continuosShoot(s_Intake.getExtensionStatus(), master);
+				pros::lcd::print(3, "ButtonPressed");
 			}
 			s_Drivetrain.joystickControl(master);
 			s_Drivetrain.flapsControl(master);
