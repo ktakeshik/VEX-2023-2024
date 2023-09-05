@@ -26,16 +26,16 @@ class Drivetrain_Subsystem {
     Drivetrain_Subsystem();
 
     void setBrakeMode(int mode);
+
+    double getLeftPost();
+
+    double getRightPost();
     
-    bool getExtensionStatus();
+    bool getExtension();
 
-    void toggleExtensionState();
+    void toggleExtension();
 
-    void setExtensionState(bool value);
-
-    void flapsControl(pros::Controller controller);
-
-    void fieldOrientatedControl(pros::Controller controller);
+    void setExtension(bool value);
 
     void joystickControl(pros::Controller controller); 
 

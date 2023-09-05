@@ -16,15 +16,13 @@ class Intake_Subsystem {
     public:
     Intake_Subsystem();
 
-    bool getExtensionStatus();
+    bool getExtension();
 
-    void toggleExtensionState();
+    void toggleExtension();
 
-    void setExtensionState(bool value);
+    void setExtension(bool value);
 
-    void intakeExtensionControl(pros::Controller controller);
-
-    void intakeControl(pros::Controller controller);
+    void intakeControl(float percentOut);
 
     void printTask();
 };

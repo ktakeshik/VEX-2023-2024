@@ -33,23 +33,25 @@ namespace Constants {
 
         const int SP_LEFT_ROTATION = 2;
         const int SP_RIGHT_ROTATION = 10;
-        const int SP_HORIZONTAL_ROTATION = 7;
+        // const int SP_HORIZONTAL_ROTATION = 7;
 
         const bool S_LEFT_ROTATION_REVERSED = false;
         const bool S_RIGHT_ROTATION_REVERSED = true;
-        const bool S_HORIZONTAL_ROTATION_REVERSED = false;
+        // const bool S_HORIZONTAL_ROTATION_REVERSED = false;
 
-        const int SP_INERTIAL = 3;
+        const int SP_INERTIAL = 8;
 
         //Measurements
-        const double LEFT_TRACKING_DIAMETER = 2.75;
-        const double RIGHT_TRACKING_DIAMETER = 2.75;
-        const double HORIZONTAL_TRACKING_DIAMETER = 3.25;
+        const double LEFT_TRACKING_DIAMETER = 4;
+        const double RIGHT_TRACKING_DIAMETER = 4;
+        // const double HORIZONTAL_TRACKING_DIAMETER = 3.25;
 
-        const double CENTER_TO_LEFT = 8.625;
-        const double CENTER_TO_RIGHT = 8.625;
-        const double CENTER_TO_HORIZONTAL = 10.5625;
-        const double TRACKING_WHEELS_SPAN = 17.25;
+        const double CENTER_TO_LEFT = 5.8125;
+        const double CENTER_TO_RIGHT = 5.8125;
+        // const double CENTER_TO_HORIZONTAL = 10.5625;
+        const double TRACKING_WHEELS_SPAN = 11.625;
+
+        const double GEAR_REDUCTION = 2.33333333;
     }
 
     namespace Catapult {
@@ -64,6 +66,9 @@ namespace Constants {
 
         const float CATAPULT_MINIMUM_ANGLE = 30300;
         const float CATAPUL_MAXIMUM_ANGLE = 29074;
+
+        const float CATAPULT_MID_MIN_ANGLE = 30300;
+        const float CATAPUL_MID_MAX_ANGLE = 29074;
 
         const float CATAPULT_UP_ANGLE = 34000;
     }
