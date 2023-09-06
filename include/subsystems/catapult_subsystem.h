@@ -12,17 +12,37 @@ class Catapult_Subsystem {
     pros::Rotation s_rotation;
 
     public:
+
+    //variables
+    bool saftey;
+    enum catapult_state {DEFAULT_STATE, LAUNCH_TRIBALL, POSSESS_TRIBALL, MATCH_LOAD, STAY_UP};
+
+    private: 
+    catapult_state cata_status;
+
+    public:
+    
     Catapult_Subsystem();
 
     bool isCatapultDown();
 
+    bool isCatapultMiddle();
+
     bool isCatapultUp();
 
-    void catapultControl(pros::Controller controller, bool intakeOut);
+    void setSaftey(bool value);
 
-    void autoCatapultMovement(bool intakeOut);
+    void toggleSaftey();
 
-    void loadCatapult(bool intakeOut);
+    bool getSaftey();
+
+    void setCatapultState(catapult_state status);
+
+    int getCatapultState();
+
+    void catapultControl(float percentOut);
+
+    void stopCatapult();
 
     void printTask();
 };

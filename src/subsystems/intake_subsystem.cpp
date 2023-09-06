@@ -14,42 +14,23 @@ Intake_Subsystem::Intake_Subsystem ()
     m_intake_configurator.set_brake_mode(Constants::Intake::M_INTAKE_BRAKE_MODE);
 }
 
-bool Intake_Subsystem::getExtensionStatus(){
+bool Intake_Subsystem::getExtension(){
     return isIntakeOut;
 }
 
-void Intake_Subsystem::toggleExtensionState(){
+void Intake_Subsystem::toggleExtension(){
     isIntakeOut = !isIntakeOut;
     s_intake_extension.set_value(isIntakeOut);
 }
 
-void Intake_Subsystem::setExtensionState(bool value){
+void Intake_Subsystem::setExtension(bool value){
     s_intake_extension.set_value(value);
     isIntakeOut = value;
 }
 
-void Intake_Subsystem::intakeExtensionControl(pros::Controller controller){
-    if (controller.get_digital(DIGITAL_RIGHT)) {
-        toggleExtensionState();
-        while(controller.get_digital(DIGITAL_RIGHT)){
-            pros::delay(20);
-        }
-    }
-}
-
-void Intake_Subsystem::intakeControl(pros::Controller controller){
-    if(!getExtensionStatus()){
-        return;
-    }
-    if (controller.get_digital(DIGITAL_L2)) {
-        m_intake.move(-127);
-        return;
-    }
-    else if (controller.get_digital(DIGITAL_L1)){
-        m_intake.move(127);
-        return;
-    }
-    m_intake.brake();
+void Intake_Subsystem::intakeControl(float percentOut){
+    percentOut *= 600;
+    m_intake.move_velocity(percentOut);
 }
 
 void Intake_Subsystem::printTask() 
@@ -57,4 +38,3 @@ void Intake_Subsystem::printTask()
     // pros::lcd::print(1, "LEFTMG: %f", m_left_rear.get_actual_velocity());
 	// pros::lcd::print(2, "RIGHTMG: %f", m_right_rear.get_actual_velocity());
 }
-

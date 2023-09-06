@@ -45,6 +45,9 @@ Drivetrain_Subsystem::Drivetrain_Subsystem ()
 
     mg_left.set_reversed(Constants::Drivetrain::MG_LEFT_REVERSED);
     mg_right.set_reversed(Constants::Drivetrain::MG_RIGHT_REVERSED);
+
+    mg_left.set_encoder_units(MOTOR_ENCODER_ROTATIONS);
+    mg_right.set_encoder_units(MOTOR_ENCODER_ROTATIONS);
 }
 
 void Drivetrain_Subsystem::setBrakeMode(int mode)
@@ -54,27 +57,26 @@ void Drivetrain_Subsystem::setBrakeMode(int mode)
     mg_right.set_brake_modes(brake_mode[mode]);
 }
 
-bool Drivetrain_Subsystem::getExtensionStatus(){
+double Drivetrain_Subsystem::getLeftPost() {
+    return m_left_front.get_position() / Constants::Drivetrain::GEAR_REDUCTION;
+}
+
+double Drivetrain_Subsystem::getRightPost() {
+    return m_right_front.get_position() / Constants::Drivetrain::GEAR_REDUCTION;
+}
+
+bool Drivetrain_Subsystem::getExtension(){
     return isFlapsExtended; 
 }
 
-void Drivetrain_Subsystem::toggleExtensionState(){
+void Drivetrain_Subsystem::toggleExtension(){
     isFlapsExtended = !isFlapsExtended;
     s_flaps_extension.set_value(isFlapsExtended);
 }
 
-void Drivetrain_Subsystem::setExtensionState(bool value){
+void Drivetrain_Subsystem::setExtension(bool value){
     s_flaps_extension.set_value(value);
     isFlapsExtended = value;
-}
-
-void Drivetrain_Subsystem::flapsControl(pros::Controller controller){
-    if (controller.get_digital(DIGITAL_UP)){
-        toggleExtensionState();
-        while(controller.get_digital(DIGITAL_UP)){
-            pros::delay(20);
-        }
-    }
 }
 
 void Drivetrain_Subsystem::joystickControl(pros::Controller controller) 
@@ -85,10 +87,12 @@ void Drivetrain_Subsystem::joystickControl(pros::Controller controller)
     m_right_ext.move(controller.get_analog(ANALOG_RIGHT_Y));
 }
 
-void Drivetrain_Subsystem::drivetrainControl(double leftMG, double rightMG)
+void Drivetrain_Subsystem::drivetrainControl(double leftPercent, double rightPercent)
 {
-    mg_left.move_velocity(leftMG);
-    mg_right.move_velocity(rightMG) ;
+    leftPercent *= 600;
+    rightPercent *= 600;
+    mg_left.move_velocity(leftPercent);
+    mg_right.move_velocity(rightPercent);
 }
 
 void Drivetrain_Subsystem::stopControl()
@@ -99,7 +103,6 @@ void Drivetrain_Subsystem::stopControl()
 
 void Drivetrain_Subsystem::printTask() 
 {
-    // pros::lcd::print(1, "LEFTMG: %f", m_left_rear.get_actual_velocity());
-	// pros::lcd::print(2, "RIGHTMG: %f", m_right_rear.get_actual_velocity());
+    // pros::lcd::print(4, "LEFTMG: %f", m_left_rear.get_position());
+	// pros::lcd::print(5, "RIGHTMG: %f", m_right_rear.get_position());
 }
-

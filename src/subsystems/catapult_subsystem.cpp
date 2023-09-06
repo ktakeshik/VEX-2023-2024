@@ -14,6 +14,9 @@ Catapult_Subsystem::Catapult_Subsystem ()
     m_catapult_configurator.set_brake_mode(M_CATAPULT_BRAKE_MODE);
 
     s_rotation.set_reversed(S_ROTATION_REVERSED);
+
+    setCatapultState(Catapult_Subsystem::STAY_UP);
+    setSaftey(true);
 }
 
 bool Catapult_Subsystem::isCatapultDown() {
@@ -22,50 +25,48 @@ bool Catapult_Subsystem::isCatapultDown() {
         true : false;
 }
 
+bool Catapult_Subsystem::isCatapultMiddle() {
+    return (s_rotation.get_angle() < CATAPULT_MID_MIN_ANGLE &&
+        s_rotation.get_angle() > CATAPUL_MID_MAX_ANGLE) ?
+        true : false;
+}
+
 bool Catapult_Subsystem::isCatapultUp() {
     return (s_rotation.get_angle() > CATAPULT_UP_ANGLE) ?
         true : false;
 }
 
-void Catapult_Subsystem::catapultControl(pros::Controller controller, bool intakeOut) {
-    if (!intakeOut) {
-        return;
-    }
-    if (controller.get_digital(DIGITAL_R1)) {
-        m_catapult.move(60);
-        return;
-    }
-    m_catapult.brake();
+void Catapult_Subsystem::setSaftey(bool value) {
+    saftey = value;
 }
 
-void Catapult_Subsystem::autoCatapultMovement(bool intakeOut) {
-    if (!intakeOut) {
-        return;
-    }
-
-    while(!isCatapultUp()) {
-        m_catapult.move(127);
-        pros::delay(20);  
-    }
-    
-    m_catapult.brake();
+void Catapult_Subsystem::toggleSaftey() {
+    saftey = !saftey;
 }
 
-void Catapult_Subsystem::loadCatapult(bool intakeOut) {
-    if (!intakeOut) {
-        return;
-    }
-    
-    while(!isCatapultDown()) {
-        m_catapult.move(110);
-        pros::delay(20);
-    }
+bool Catapult_Subsystem::getSaftey() {
+    return saftey;
+}
+
+void Catapult_Subsystem::setCatapultState(catapult_state status) {
+    cata_status = status;
+}
+
+int Catapult_Subsystem::getCatapultState() {
+    return cata_status;
+}
+
+void Catapult_Subsystem::catapultControl(float percentOut) {
+    percentOut *= 600;
+    m_catapult.move_velocity(fabsf(percentOut));
+}
+
+void Catapult_Subsystem::stopCatapult() {
     m_catapult.brake();
 }
 
 void Catapult_Subsystem::printTask() 
 {
-    pros::lcd::print(2, "LEFTMG: %i", s_rotation.get_angle());
+    pros::lcd::print(6, "LEFTMG: %i", s_rotation.get_angle());
 	// pros::lcd::print(2, "RIGHTMG: %f", m_right_rear.get_actual_velocity());
 }
-

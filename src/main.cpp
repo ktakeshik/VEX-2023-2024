@@ -1,14 +1,23 @@
 #include "main.h"
-#include "subsystems\catapult_subsystem.h"
-#include "subsystems\drivetrain_subsystem.h"
-#include "subsystems\elevation_subsystem.h"
-#include "subsystems\intake_subsystem.h"
-
+#include "subsystems/catapult_subsystem.h"
+#include "subsystems/drivetrain_subsystem.h"
+#include "subsystems/elevation_subsystem.h"
+#include "subsystems/intake_subsystem.h"
+#include "robot_control/auto_control.h"
+#include "robot_control/auto_paths.h"
+#include "robot_control/pose_estimator.h"
+#include "robot_control/teleop_control.h"
 
 Catapult_Subsystem s_Catapult;
 Drivetrain_Subsystem s_Drivetrain;
 Elevation_Subsystem s_Elevation;
 Intake_Subsystem s_Intake;
+Pose_Estimator s_Pose;
+
+Autonomous_Control s_AutoControl = Autonomous_Control(s_Catapult, s_Drivetrain, s_Elevation, s_Intake, s_Pose);
+Autonomous_Paths r_Auto = Autonomous_Paths(s_AutoControl);
+
+Teleoperation_Control r_Teleop = Teleoperation_Control(s_Catapult, s_Drivetrain, s_Elevation, s_Intake);
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -22,7 +31,20 @@ void initialize() {
 		while(true)
 		{
 			s_Catapult.printTask();
+			s_Drivetrain.printTask();
+			s_Elevation.printTask();
+			s_Intake.printTask();
+			s_Pose.printTask();
 			pros::delay(20);
+		}
+	}};
+
+	pros::Task miscTask{[] {
+		while(true)
+		{
+			r_Teleop.catapultControl();
+			s_Pose.positionCalc(s_Drivetrain.getLeftPost(), s_Drivetrain.getRightPost());
+			pros::delay(5);
 		}
 	}};
 }
@@ -56,7 +78,30 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {}
+void autonomous() {
+	r_Auto.setAutoPath(Autonomous_Paths::TESTING);
+
+	switch (r_Auto.getAutoPath()) {
+		case Autonomous_Paths::NONE:
+		break;
+		
+		case Autonomous_Paths::TESTING:
+		r_Auto.test();
+		break;
+
+		case Autonomous_Paths::LEFT_PATH:
+		r_Auto.leftPath();
+		break;
+
+		case Autonomous_Paths::RIGHT_PATH:
+		r_Auto.rightPath();
+		break;
+
+		case Autonomous_Paths::SKILLS_PATH:
+		r_Auto.skillsPath();
+		break;
+	}
+}
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -73,24 +118,6 @@ void autonomous() {}
  */
 void opcontrol() {
 	pros::Task teleOp{[] {
-		pros::Controller master(pros::E_CONTROLLER_MASTER);
-		
-		while(true)
-		{
-			// s_Catapult.catapultControl(master, s_Intake.getExtensionStatus());
-			if (master.get_digital(DIGITAL_R1)) {
-				s_Catapult.autoCatapultMovement(s_Intake.getExtensionStatus());
-				pros::lcd::print(3, "ButtonPressed");
-			}
-			else if (!master.get_digital_new_press(DIGITAL_R1)) {
-				s_Catapult.loadCatapult(s_Intake.getExtensionStatus());
-			}
-			s_Drivetrain.joystickControl(master);
-			s_Drivetrain.flapsControl(master);
-			s_Elevation.elevationControl(master);
-			s_Intake.intakeControl(master);
-			s_Intake.intakeExtensionControl(master);
-			pros::delay(20);
-		}
+		r_Teleop.teleopControl();
 	}};
 }

@@ -13,27 +13,18 @@ Elevation_Subsystem::Elevation_Subsystem ()
     m_intake_configurator.set_brake_mode(Constants::Intake::M_INTAKE_BRAKE_MODE);
 }
 
-bool Elevation_Subsystem::getExtensionStatus(){
+bool Elevation_Subsystem::getExtension(){
     return isArmOut;
 }
 
-void Elevation_Subsystem::toggleExtensionState(){
+void Elevation_Subsystem::toggleExtension(){
     isArmOut = !isArmOut;
     s_arm_extension.set_value(isArmOut);
 }
 
-void Elevation_Subsystem::setExtensionState(bool value){
+void Elevation_Subsystem::setExtension(bool value){
     s_arm_extension.set_value(value);
     isArmOut = value;
-}
-
-void Elevation_Subsystem::elevationControl(pros::Controller controller){
-    if (controller.get_digital(DIGITAL_LEFT)) {
-        toggleExtensionState();
-        while(controller.get_digital(DIGITAL_LEFT)){
-            pros::delay(20);
-        }
-    }
 }
 
 void Elevation_Subsystem::printTask() 
@@ -41,4 +32,3 @@ void Elevation_Subsystem::printTask()
     // pros::lcd::print(1, "LEFTMG: %f", m_left_rear.get_actual_velocity());
 	// pros::lcd::print(2, "RIGHTMG: %f", m_right_rear.get_actual_velocity());
 }
-

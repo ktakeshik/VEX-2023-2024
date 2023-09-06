@@ -14,13 +14,11 @@ class Elevation_Subsystem {
     public:
     Elevation_Subsystem();
 
-    bool getExtensionStatus();
+    bool getExtension();
 
-    void toggleExtensionState();
+    void toggleExtension();
 
-    void setExtensionState(bool value);
-
-    void elevationControl(pros::Controller controller);
+    void setExtension(bool value);
 
     void printTask();
 };
