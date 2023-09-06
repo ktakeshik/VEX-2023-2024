@@ -79,7 +79,28 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-	r_Auto.test();
+	r_Auto.setAutoPath(Autonomous_Paths::TESTING);
+
+	switch (r_Auto.getAutoPath()) {
+		case Autonomous_Paths::NONE:
+		break;
+		
+		case Autonomous_Paths::TESTING:
+		r_Auto.test();
+		break;
+
+		case Autonomous_Paths::LEFT_PATH:
+		r_Auto.leftPath();
+		break;
+
+		case Autonomous_Paths::RIGHT_PATH:
+		r_Auto.rightPath();
+		break;
+
+		case Autonomous_Paths::SKILLS_PATH:
+		r_Auto.skillsPath();
+		break;
+	}
 }
 
 /**
