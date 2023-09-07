@@ -1,8 +1,9 @@
 #include "robot_control/auto_control.h"
 
-void Autonomous_Control::setTarget(double x_pos, double y_pos, double orientation)
+void Autonomous_Control::setTarget(double x_pos, double y_pos, double orientation, bool value)
 {
     pose_Estimator.setTarget(orientation, x_pos, y_pos);
+    pose_Estimator.setRearToTarget(value);
 }
 
 void Autonomous_Control::turnToTarget(double min, double max)
@@ -18,9 +19,10 @@ void Autonomous_Control::turnToTarget(double min, double max)
     while(!pose_Estimator.isRobotFacingTarget())
     {
         angleToTarget = pose_Estimator.getAngleToTarget();
-        velocity = (angleToTarget/3 < min) ? min : ((angleToTarget/3 > max) ? max : angleToTarget/3);
-        velocity = copysign(velocity, angleToTarget);
+        velocity = angleToTarget * 0.9;
         velocity /= 100;
+        velocity = (velocity < min) ? min : ((velocity > max) ? max : velocity);
+        velocity = copysign(velocity, angleToTarget);
 
         s_Drivetrain.drivetrainControl(velocity, -velocity);
         pros::delay(20);
@@ -32,6 +34,7 @@ void Autonomous_Control::turnToTarget(double min, double max)
 void Autonomous_Control::moveToTarget(double min, double max)
 {
     double distanceToTarget;
+    double angleToTarget;
     double velocity;
     double courseCorrection;
 
@@ -42,18 +45,27 @@ void Autonomous_Control::moveToTarget(double min, double max)
 
     while(!pose_Estimator.isRobotAtTarget())
     {
+        angleToTarget = pose_Estimator.getAngleToTarget();
         distanceToTarget = pose_Estimator.getDistanceToTarget();
-        velocity = (distanceToTarget/0.5 < min) ? min : ((distanceToTarget/0.5 > max) ? max : distanceToTarget/0.5);
-        velocity = copysign(velocity, distanceToTarget);
+        velocity = distanceToTarget * 1.5;
         velocity /= 100;
+        velocity = (velocity < min) ? min : ((velocity > max) ? max : velocity);
+        velocity = copysign(velocity, distanceToTarget);
 
-        courseCorrection = pose_Estimator.getAngleToTarget()/200;
+        courseCorrection = angleToTarget/100 * velocity;
+        courseCorrection = copysign(courseCorrection, angleToTarget);
 
         s_Drivetrain.drivetrainControl(velocity + courseCorrection, velocity - courseCorrection);
         pros::delay(20);
     }
 
     s_Drivetrain.stopControl();
+}
+
+void Autonomous_Control::manueverToTarget(double x_pos, double y_pos, bool value) {
+    setTarget(x_pos, y_pos, 0, true);
+    turnToTarget(0.05,1);
+    moveToTarget(0.15,1);
 }
 
 void Autonomous_Control::deployIntake(bool state)
@@ -78,7 +90,6 @@ void Autonomous_Control::deployElevation(bool state)
 
 void Autonomous_Control::testCode()
 {
-    setTarget(0, -3, 0);
     // turnToTarget(0, 100);
     // moveToTarget(0, 100);
 }

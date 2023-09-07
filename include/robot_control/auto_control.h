@@ -24,11 +24,13 @@ class Autonomous_Control
         s_Intake(intake_Subsystem),
         pose_Estimator(pose_Estimator){};
 
-    void setTarget(double x_pos, double y_pos, double orientation);
+    void setTarget(double x_pos, double y_pos, double orientation, bool value);
 
     void turnToTarget(double min, double max);
 
     void moveToTarget(double min, double max);
+
+    void manueverToTarget(double x_pos, double y_pos, bool value);
 
     void deployIntake(bool state);
 
