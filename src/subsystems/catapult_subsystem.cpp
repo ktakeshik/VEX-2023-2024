@@ -67,6 +67,6 @@ void Catapult_Subsystem::stopCatapult() {
 
 void Catapult_Subsystem::printTask() 
 {
-    pros::lcd::print(6, "LEFTMG: %i", s_rotation.get_angle());
+    // pros::lcd::print(6, "LEFTMG: %i", s_rotation.get_angle());
 	// pros::lcd::print(2, "RIGHTMG: %f", m_right_rear.get_actual_velocity());
 }

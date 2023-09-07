@@ -2,9 +2,7 @@
 #include "auto_control.h"
 
 void Autonomous_Paths::test() {
-    r_Auto.setTarget(10, 24, 0);
-    r_Auto.turnToTarget(0,0);
-    r_Auto.moveToTarget(0,0);
+    r_Auto.manueverToTarget(-5, -24, true);
 }
 
 void Autonomous_Paths::leftPath() {

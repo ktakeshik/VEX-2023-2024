@@ -113,6 +113,14 @@ void Pose_Estimator ::setTarget(double orientation, double x_position, double y_
     targetStruct.y_position = y_position;
 }
 
+bool Pose_Estimator ::rearToTarget(){
+    return rear_to_target;
+}
+
+void Pose_Estimator ::setRearToTarget(bool value) {
+    rear_to_target = value;
+}
+
 bool Pose_Estimator ::isRobotFacingTarget()
 {
     return fabs(getAngleToTarget()) < 1 ? true : false;
@@ -152,9 +160,17 @@ double Pose_Estimator ::getAngleToTarget()
         y_pos_relative = -poseStruct.y_position;
     }
 
+    
     if(poseStruct.angle > Constants::PI)
     {
         orientation = poseStruct.angle - (2 * Constants::PI);
+    }
+
+    if(rearToTarget()) {
+        if(poseStruct.angle < Constants::PI)
+        {
+            // orientation = poseStruct.angle +  (2 * Constants::PI);
+        }
     }
 
     if(y_pos_relative == 0)
@@ -170,13 +186,25 @@ double Pose_Estimator ::getAngleToTarget()
         tempNum = atan(x_pos_relative/y_pos_relative);
     }
 
-    if(y_pos_relative < 0 && x_pos_relative < 0)
-    {
-        tempNum -= Constants::PI;
-    }
-    else if(y_pos_relative < 0 && x_pos_relative > 0)
-    {
-        tempNum += Constants::PI;
+    if (!rearToTarget()) {
+        if(y_pos_relative < 0 && x_pos_relative < 0)
+        {
+            tempNum -= Constants::PI;
+        }
+        else if(y_pos_relative < 0 && x_pos_relative > 0)
+        {
+            tempNum += Constants::PI;
+        }
+    } 
+    else {
+        if(y_pos_relative > 0 && x_pos_relative > 0)
+        {
+            tempNum -= Constants::PI;
+        }
+        else if(y_pos_relative > 0 && x_pos_relative < 0)
+        {
+            tempNum += Constants::PI;
+        }
     }
     originToAngle = tempNum - orientation;
 
@@ -192,7 +220,8 @@ double Pose_Estimator ::getDistanceToTarget()
 {
     double x_pos_relative = targetStruct.x_position - poseStruct.x_position;
     double y_pos_relative = targetStruct.y_position - poseStruct.y_position;
-    return sqrt(pow(x_pos_relative, 2) + pow(y_pos_relative, 2));
+    double tempNum = sqrt(pow(x_pos_relative, 2) + pow(y_pos_relative, 2));
+    return (rearToTarget()) ? -tempNum : tempNum;
 }
 
 double Pose_Estimator ::getDistanceTraveled() 
@@ -221,6 +250,6 @@ void Pose_Estimator ::printTask()
     pros::lcd::print(1, "ORIENTATION: %f", getOrientation());
 	pros::lcd::print(2, "XPOSITION: %f", getXPosition());
 	pros::lcd::print(3, "YPOSITION: %f", getYPosition());
-    pros::lcd::print(4, "XPOSITION: %f", getAngleToTarget());
-	pros::lcd::print(5, "YPOSITION: %f", getDistanceToTarget());
+    pros::lcd::print(4, "ANGLE: %f", getAngleToTarget());
+	pros::lcd::print(5, "DISTANCE: %f", getDistanceToTarget());
 }

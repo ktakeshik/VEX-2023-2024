@@ -30,6 +30,7 @@ class Pose_Estimator {
     double previous_angle;
     double previous_left_distance;
     double previous_right_distance;
+    bool rear_to_target;
 
     public:
     //Constructor
@@ -46,7 +47,11 @@ class Pose_Estimator {
 
     void positionCalc(double left_position, double right_position);
 
-    void setTarget(double orientation, double x_position, double y_position);\
+    void setTarget(double orientation, double x_position, double y_position);
+
+    bool rearToTarget();
+
+    void setRearToTarget(bool value);
 
     bool isRobotFacingTarget();
 

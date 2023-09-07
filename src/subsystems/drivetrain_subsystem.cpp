@@ -48,6 +48,9 @@ Drivetrain_Subsystem::Drivetrain_Subsystem ()
 
     mg_left.set_encoder_units(MOTOR_ENCODER_ROTATIONS);
     mg_right.set_encoder_units(MOTOR_ENCODER_ROTATIONS);
+
+    mg_left.set_zero_position(0);
+    mg_right.set_zero_position(0);
 }
 
 void Drivetrain_Subsystem::setBrakeMode(int mode)
@@ -92,13 +95,17 @@ void Drivetrain_Subsystem::drivetrainControl(double leftPercent, double rightPer
     leftPercent *= 600;
     rightPercent *= 600;
     mg_left.move_velocity(leftPercent);
+    m_left_ext.move_velocity(leftPercent);
     mg_right.move_velocity(rightPercent);
+    m_right_ext.move_velocity(rightPercent);
 }
 
 void Drivetrain_Subsystem::stopControl()
 {
     mg_left.brake();
+    m_left_ext.brake();
     mg_right.brake();
+    m_right_ext.brake();
 }
 
 void Drivetrain_Subsystem::printTask() 
