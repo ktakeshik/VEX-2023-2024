@@ -2,7 +2,7 @@
 #include "auto_control.h"
 
 void Autonomous_Paths::test() {
-    r_Auto.manueverToTarget(-5, -24, true);
+    r_Auto.launchCatapult();
 }
 
 void Autonomous_Paths::leftPath() {
@@ -10,6 +10,12 @@ void Autonomous_Paths::leftPath() {
 }
 
 void Autonomous_Paths::rightPath() {
+    
+    r_Auto.setTarget(0, 24, 0, false);
+    r_Auto.turnToTarget(0.05, 1, 0.9);
+    r_Auto.moveToTarget(0.15, 1, 1.5);
+    r_Auto.deployIntake(true);
+    r_Auto.setIntake(-1);
     
 }
 

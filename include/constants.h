@@ -67,8 +67,8 @@ namespace Constants {
         const float CATAPULT_MINIMUM_ANGLE = 30300;
         const float CATAPUL_MAXIMUM_ANGLE = 29074;
 
-        const float CATAPULT_MID_MIN_ANGLE = 30300;
-        const float CATAPUL_MID_MAX_ANGLE = 29074;
+        const float CATAPULT_MID_MIN_ANGLE = 32000;
+        const float CATAPUL_MID_MAX_ANGLE = 31000;
 
         const float CATAPULT_UP_ANGLE = 34000;
     }

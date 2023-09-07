@@ -11,6 +11,10 @@
 class Autonomous_Control
 {
     public:
+
+    float turnMin, turnMax, turnP, driveMin, driveMax, driveP;
+
+
     Autonomous_Control(
         Catapult_Subsystem& catapult_Subsystem,
         Drivetrain_Subsystem& drivetrain_Subsystem,
@@ -26,9 +30,11 @@ class Autonomous_Control
 
     void setTarget(double x_pos, double y_pos, double orientation, bool value);
 
-    void turnToTarget(double min, double max);
+    void setConstraints(double turnMin, double turnMax, double turnP, double driveMin, double driveMax, double driveP);
 
-    void moveToTarget(double min, double max);
+    void turnToTarget(double min, double max, double turnP);
+
+    void moveToTarget(double min, double max, double driveP);
 
     void manueverToTarget(double x_pos, double y_pos, bool value);
 
@@ -37,6 +43,8 @@ class Autonomous_Control
     void setIntake(float percentOut);
 
     void launchCatapult();
+
+    void setCatapultMid();
 
     void deployElevation(bool state);
 

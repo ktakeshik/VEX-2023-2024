@@ -39,12 +39,19 @@ void initialize() {
 		}
 	}};
 
-	pros::Task miscTask{[] {
+	pros::Task poseTask{[] {
+		while(true)
+		{
+			s_Pose.positionCalc(s_Drivetrain.getLeftPost(), s_Drivetrain.getRightPost());
+			pros::delay(5);
+		}
+	}};
+
+	pros::Task catapultTask{[] {
 		while(true)
 		{
 			r_Teleop.catapultControl();
-			s_Pose.positionCalc(s_Drivetrain.getLeftPost(), s_Drivetrain.getRightPost());
-			pros::delay(5);
+			pros::delay(20);
 		}
 	}};
 }
@@ -79,7 +86,8 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-	r_Auto.setAutoPath(Autonomous_Paths::TESTING);
+	r_Auto.setAutoPath(Autonomous_Paths::RIGHT_PATH);
+	
 
 	switch (r_Auto.getAutoPath()) {
 		case Autonomous_Paths::NONE:

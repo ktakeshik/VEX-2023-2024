@@ -6,11 +6,20 @@ void Autonomous_Control::setTarget(double x_pos, double y_pos, double orientatio
     pose_Estimator.setRearToTarget(value);
 }
 
-void Autonomous_Control::turnToTarget(double min, double max)
+void Autonomous_Control::setConstraints(double rotateMin, double rotateMax, double rotateP, double moveMin, double moveMax, double moveP) {
+    turnMin = rotateMin;
+    turnMax = rotateMax;
+    turnP = rotateP;
+    driveMin = moveMin;
+    driveMax = moveMax;
+    driveP = moveP;
+}
+
+void Autonomous_Control::turnToTarget(double min, double max, double turnP)
 {
     double angleToTarget;
     double velocity;
-
+    pros::lcd::print(7, "AAAAAAAAAAAAAAAAAA");
     if(pose_Estimator.isRobotFacingTarget())
     {
         return;
@@ -19,7 +28,7 @@ void Autonomous_Control::turnToTarget(double min, double max)
     while(!pose_Estimator.isRobotFacingTarget())
     {
         angleToTarget = pose_Estimator.getAngleToTarget();
-        velocity = angleToTarget * 0.9;
+        velocity = angleToTarget * turnP;
         velocity /= 100;
         velocity = (velocity < min) ? min : ((velocity > max) ? max : velocity);
         velocity = copysign(velocity, angleToTarget);
@@ -31,7 +40,7 @@ void Autonomous_Control::turnToTarget(double min, double max)
     s_Drivetrain.stopControl();
 }
 
-void Autonomous_Control::moveToTarget(double min, double max)
+void Autonomous_Control::moveToTarget(double min, double max, double driveP)
 {
     double distanceToTarget;
     double angleToTarget;
@@ -47,7 +56,7 @@ void Autonomous_Control::moveToTarget(double min, double max)
     {
         angleToTarget = pose_Estimator.getAngleToTarget();
         distanceToTarget = pose_Estimator.getDistanceToTarget();
-        velocity = distanceToTarget * 1.5;
+        velocity = distanceToTarget * driveP;
         velocity /= 100;
         velocity = (velocity < min) ? min : ((velocity > max) ? max : velocity);
         velocity = copysign(velocity, distanceToTarget);
@@ -64,8 +73,8 @@ void Autonomous_Control::moveToTarget(double min, double max)
 
 void Autonomous_Control::manueverToTarget(double x_pos, double y_pos, bool value) {
     setTarget(x_pos, y_pos, 0, true);
-    turnToTarget(0.05,1);
-    moveToTarget(0.15,1);
+    turnToTarget(turnMin, turnMax, turnP);
+    moveToTarget(driveMin, driveMax, driveP);
 }
 
 void Autonomous_Control::deployIntake(bool state)
@@ -81,6 +90,13 @@ void Autonomous_Control::setIntake(float percentOut)
 void Autonomous_Control::launchCatapult()
 {
     s_Catapult.setCatapultState(Catapult_Subsystem::LAUNCH_TRIBALL);
+    pros::delay(100);
+    s_Catapult.setCatapultState(Catapult_Subsystem::DEFAULT_STATE);
+}
+
+void Autonomous_Control::setCatapultMid()
+{
+    s_Catapult.setCatapultState(Catapult_Subsystem::POSSESS_TRIBALL);
 }
 
 void Autonomous_Control::deployElevation(bool state)

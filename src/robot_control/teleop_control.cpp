@@ -9,30 +9,27 @@ void Teleoperation_Control::catapultControl()
     switch (s_Catapult.getCatapultState()) 
     {
         case Catapult_Subsystem::DEFAULT_STATE:
-            if (!s_Catapult.isCatapultDown()) {
+            while (!s_Catapult.isCatapultDown()) {
                 s_Catapult.catapultControl(0.86);
+                pros::delay(20);
             }
-            else {
-                s_Catapult.stopCatapult();
-            }
+            s_Catapult.stopCatapult();
             break;
 
         case Catapult_Subsystem::LAUNCH_TRIBALL:
-            if (!s_Catapult.isCatapultUp()) {
+            while (!s_Catapult.isCatapultUp()) {
                 s_Catapult.catapultControl(1);
+                pros::delay(20);
             }
-            else {
-                s_Catapult.stopCatapult();
-            }
+            s_Catapult.stopCatapult();
             break;
 
         case Catapult_Subsystem::POSSESS_TRIBALL:
-            if (!s_Catapult.isCatapultMiddle()) {
-                s_Catapult.catapultControl(0.6);
+            while (!s_Catapult.isCatapultMiddle()) {
+                s_Catapult.catapultControl(0.45);
+                pros::delay(20);
             }
-            else {
-                s_Catapult.stopCatapult();
-            }
+            s_Catapult.stopCatapult();
             break;
         
         case Catapult_Subsystem::MATCH_LOAD:
@@ -60,7 +57,7 @@ void Teleoperation_Control::teleopControl()
 
         s_Drivetrain.joystickControl(master);
 
-        if (master.get_digital_new_press(DIGITAL_DOWN)) {
+        if (master.get_digital_new_press(DIGITAL_RIGHT)) {
             s_Drivetrain.toggleExtension();
         }
 
@@ -70,7 +67,7 @@ void Teleoperation_Control::teleopControl()
         * 
         ********************************************************************/
 
-        if (master.get_digital_new_press(DIGITAL_UP)) {
+        if (master.get_digital_new_press(DIGITAL_B)) {
             s_Elevation.toggleExtension();
         }
     
@@ -90,7 +87,7 @@ void Teleoperation_Control::teleopControl()
             s_Intake.intakeControl(0);
         }
 
-        if (master.get_digital_new_press(DIGITAL_RIGHT)) {
+        if (master.get_digital_new_press(DIGITAL_Y)) {
             s_Intake.toggleExtension();
         }
 
@@ -100,7 +97,8 @@ void Teleoperation_Control::teleopControl()
         * 
         ********************************************************************/
 
-        if (master.get_digital(DIGITAL_R1)) {
+        if (master.get_digital_new_press(DIGITAL_R1)) {
+            s_Catapult.setSaftey(false);
             s_Catapult.setCatapultState(Catapult_Subsystem::LAUNCH_TRIBALL);
         }
         else if (master.get_digital(DIGITAL_R2)) {
@@ -108,14 +106,15 @@ void Teleoperation_Control::teleopControl()
         }
         else if (!master.get_digital_new_press(DIGITAL_R1) 
             && !master.get_digital(DIGITAL_R2) 
-            && !s_Catapult.getSaftey()) {
+            && !s_Catapult.getSaftey()
+            && !master.get_digital_new_press(DIGITAL_UP)) {
             s_Catapult.setCatapultState(Catapult_Subsystem::DEFAULT_STATE);
         }
 
-        if (master.get_digital_new_press(DIGITAL_LEFT)) {
+        if (master.get_digital(DIGITAL_UP)) {
             s_Catapult.toggleSaftey();
+            s_Catapult.setCatapultState(Catapult_Subsystem::POSSESS_TRIBALL);
         } 
-       
     }
 }
 
