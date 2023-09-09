@@ -7,8 +7,6 @@ class Pose_Estimator {
     private:
 
     //Sensors
-    // pros::Rotation s_left_rotation;
-	// pros::Rotation s_right_rotation;
     pros::Imu s_inertial;
 
     //Odometry
@@ -37,6 +35,8 @@ class Pose_Estimator {
     Pose_Estimator();
 
     //Methods
+    void zeroOutPosition();
+
     double getDistance(double position, double wheel_diameter);
 
     double getInchesTraveled(double position, std::string string, double wheel_diameter);

@@ -25,6 +25,8 @@ class Drivetrain_Subsystem {
     public:
     Drivetrain_Subsystem();
 
+    void zeroOutMotors();
+
     void setBrakeMode(int mode);
 
     double getLeftPost();
@@ -39,7 +41,7 @@ class Drivetrain_Subsystem {
 
     void joystickControl(pros::Controller controller); 
 
-    void drivetrainControl(double leftMG, double rightMG);
+    void drivetrainControl(double leftPercent, double rightPercent);
 
     void stopControl();
 

@@ -26,6 +26,7 @@ Teleoperation_Control r_Teleop = Teleoperation_Control(s_Catapult, s_Drivetrain,
  */
 void initialize() {
 	pros::lcd::initialize();
+	s_Pose.zeroOutPosition();
 	
 	pros::Task printTask{[] {
 		while(true)
@@ -86,8 +87,8 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-	r_Auto.setAutoPath(Autonomous_Paths::RIGHT_PATH);
-	
+	r_Auto.setAutoPath(Autonomous_Paths::LEFT_PATH);
+	s_Pose.zeroOutPosition();
 
 	switch (r_Auto.getAutoPath()) {
 		case Autonomous_Paths::NONE:

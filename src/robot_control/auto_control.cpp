@@ -19,7 +19,7 @@ void Autonomous_Control::turnToTarget(double min, double max, double turnP)
 {
     double angleToTarget;
     double velocity;
-    pros::lcd::print(7, "AAAAAAAAAAAAAAAAAA");
+    
     if(pose_Estimator.isRobotFacingTarget())
     {
         return;
@@ -71,8 +71,12 @@ void Autonomous_Control::moveToTarget(double min, double max, double driveP)
     s_Drivetrain.stopControl();
 }
 
+void Autonomous_Control::setDrivetrain(float leftPercent, float rightPercent) {
+    s_Drivetrain.drivetrainControl(leftPercent, rightPercent);
+}
+
 void Autonomous_Control::manueverToTarget(double x_pos, double y_pos, bool value) {
-    setTarget(x_pos, y_pos, 0, true);
+    setTarget(x_pos, y_pos, 0, value);
     turnToTarget(turnMin, turnMax, turnP);
     moveToTarget(driveMin, driveMax, driveP);
 }

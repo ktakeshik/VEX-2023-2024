@@ -50,11 +50,21 @@ Drivetrain_Subsystem::Drivetrain_Subsystem ()
     mg_right.set_encoder_units(MOTOR_ENCODER_ROTATIONS);
 }
 
+void Drivetrain_Subsystem::zeroOutMotors()
+{
+    mg_left.set_zero_position(0);
+    m_left_ext.set_zero_position(0);
+    mg_right.set_zero_position(0);
+    m_right_ext.set_zero_position(0);
+}
+
 void Drivetrain_Subsystem::setBrakeMode(int mode)
 {
     pros::motor_brake_mode_e_t brake_mode[3] = {pros::E_MOTOR_BRAKE_COAST, pros::E_MOTOR_BRAKE_BRAKE, pros::E_MOTOR_BRAKE_HOLD};
     mg_left.set_brake_modes(brake_mode[mode]);
+    m_left_ext.set_brake_mode(brake_mode[mode]);
     mg_right.set_brake_modes(brake_mode[mode]);
+    m_right_ext.set_brake_mode(brake_mode[mode]);
 }
 
 double Drivetrain_Subsystem::getLeftPost() {
@@ -87,16 +97,22 @@ void Drivetrain_Subsystem::joystickControl(pros::Controller controller)
     m_right_ext.move(controller.get_analog(ANALOG_RIGHT_Y));
 }
 
-void Drivetrain_Subsystem::drivetrainControl(double leftMG, double rightMG)
+void Drivetrain_Subsystem::drivetrainControl(double leftPercent, double rightPercent)
 {
-    mg_left.move_velocity(leftMG);
-    mg_right.move_velocity(rightMG) ;
+    leftPercent *= 600;
+    rightPercent *= 600;
+    mg_left.move_velocity(leftPercent);
+    m_left_ext.move_velocity(leftPercent);
+    mg_right.move_velocity(rightPercent);
+    m_right_ext.move_velocity(rightPercent);
 }
 
 void Drivetrain_Subsystem::stopControl()
 {
     mg_left.brake();
+    m_left_ext.brake();
     mg_right.brake();
+    m_right_ext.brake();
 }
 
 void Drivetrain_Subsystem::printTask() 

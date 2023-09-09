@@ -39,7 +39,7 @@ namespace Constants {
         const bool S_RIGHT_ROTATION_REVERSED = true;
         // const bool S_HORIZONTAL_ROTATION_REVERSED = false;
 
-        const int SP_INERTIAL = 8;
+        const int SP_INERTIAL = 7;
 
         //Measurements
         const double LEFT_TRACKING_DIAMETER = 4;

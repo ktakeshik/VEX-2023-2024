@@ -1,24 +1,16 @@
 #include "pose_estimator.h"
 
 Pose_Estimator ::Pose_Estimator ()
-:   //s_left_rotation(Constants::Drivetrain::SP_LEFT_ROTATION),
-//     s_right_rotation(Constants::Drivetrain::SP_RIGHT_ROTATION),
-    s_inertial(Constants::Drivetrain::SP_INERTIAL),
+:   s_inertial(Constants::Drivetrain::SP_INERTIAL),
     previous_angle(0),
     previous_left_distance(0),
     previous_right_distance(0)
 {
-    //Sensor Configuration & Intialization
-    // pros::Rotation s_left_rotation_configurator(Constants::Drivetrain::SP_LEFT_ROTATION, 
-    //     Constants::Drivetrain::S_LEFT_ROTATION_REVERSED);
+    zeroOutPosition();
+}
 
-	// pros::Rotation s_right_rotation_configurator(Constants::Drivetrain::SP_RIGHT_ROTATION, 
-    //     Constants::Drivetrain::S_RIGHT_ROTATION_REVERSED);
-
-    // s_left_rotation.set_position(0);
-	// s_right_rotation.set_position(0);
-
-    //Odometry
+void Pose_Estimator::zeroOutPosition() 
+{
     poseStruct.distance_traveled = 0;
     poseStruct.angle = 0;
     poseStruct.change_in_angle = 0;
@@ -62,15 +54,6 @@ double Pose_Estimator ::getInchesTraveled(double position, std::string string, d
     return converted_distance;
 }
 
-// double Pose_Estimator ::angleCalc(pros::Motor m_left, pros::Motor m_right) 
-// {
-//     double orientation = (getInchesTraveled(m_right, "s_right_rotation", Constants::Drivetrain::RIGHT_TRACKING_DIAMETER)
-//         - getInchesTraveled(m_left, "s_left_rotation", Constants::Drivetrain::LEFT_TRACKING_DIAMETER))
-//         /Constants::Drivetrain::TRACKING_WHEELS_SPAN;
-
-//     return orientation;
-// }
-
 double Pose_Estimator ::distanceCalc(double left_position, double right_position) 
 {   
     return (getDistance(left_position, Constants::Drivetrain::LEFT_TRACKING_DIAMETER) 
@@ -79,19 +62,6 @@ double Pose_Estimator ::distanceCalc(double left_position, double right_position
 
 void Pose_Estimator ::positionCalc(double left_position, double right_position)
 {
-    // if (poseStruct.angle >= (2 * Constants::PI))
-    // {
-    //     poseStruct.angle -= (2 * Constants::PI);
-    // }
-    // else if (poseStruct.angle < 0)
-    // {
-    //     poseStruct.angle += (2 * Constants::PI);
-    // }
-    // else 
-    // {
-    //     poseStruct.angle += angleCalc(m_left, m_right);
-    // }
-
     poseStruct.angle = s_inertial.get_heading() * (Constants::PI/180);
 
     poseStruct.distance_traveled = distanceCalc(left_position, right_position);
@@ -160,17 +130,9 @@ double Pose_Estimator ::getAngleToTarget()
         y_pos_relative = -poseStruct.y_position;
     }
 
-    
     if(poseStruct.angle > Constants::PI)
     {
         orientation = poseStruct.angle - (2 * Constants::PI);
-    }
-
-    if(rearToTarget()) {
-        if(poseStruct.angle < Constants::PI)
-        {
-            // orientation = poseStruct.angle +  (2 * Constants::PI);
-        }
     }
 
     if(y_pos_relative == 0)
@@ -186,22 +148,22 @@ double Pose_Estimator ::getAngleToTarget()
         tempNum = atan(x_pos_relative/y_pos_relative);
     }
 
-    if (!rearToTarget()) {
-        if(y_pos_relative < 0 && x_pos_relative < 0)
-        {
-            tempNum -= Constants::PI;
-        }
-        else if(y_pos_relative < 0 && x_pos_relative > 0)
-        {
-            tempNum += Constants::PI;
-        }
-    } 
-    else {
+    if (rearToTarget() == true) {
         if(y_pos_relative > 0 && x_pos_relative > 0)
         {
             tempNum -= Constants::PI;
         }
         else if(y_pos_relative > 0 && x_pos_relative < 0)
+        {
+            tempNum += Constants::PI;
+        }
+    }
+    else {
+        if(y_pos_relative < 0 && x_pos_relative < 0)
+        {
+            tempNum -= Constants::PI;
+        }
+        else if(y_pos_relative < 0 && x_pos_relative > 0)
         {
             tempNum += Constants::PI;
         }
@@ -221,7 +183,7 @@ double Pose_Estimator ::getDistanceToTarget()
     double x_pos_relative = targetStruct.x_position - poseStruct.x_position;
     double y_pos_relative = targetStruct.y_position - poseStruct.y_position;
     double tempNum = sqrt(pow(x_pos_relative, 2) + pow(y_pos_relative, 2));
-    return (rearToTarget()) ? -tempNum : tempNum;
+    return (rearToTarget() == true) ? -tempNum : tempNum;
 }
 
 double Pose_Estimator ::getDistanceTraveled() 
@@ -246,10 +208,10 @@ double Pose_Estimator ::getYPosition()
 
 void Pose_Estimator ::printTask() 
 {
-    // setTarget(0, 9, 7);
     pros::lcd::print(1, "ORIENTATION: %f", getOrientation());
 	pros::lcd::print(2, "XPOSITION: %f", getXPosition());
 	pros::lcd::print(3, "YPOSITION: %f", getYPosition());
     pros::lcd::print(4, "ANGLE: %f", getAngleToTarget());
 	pros::lcd::print(5, "DISTANCE: %f", getDistanceToTarget());
+    pros::lcd::print(6, (rearToTarget() ? "BOOLEAN BOOLEAN: true" : "BOOLEAN BOOLEAN: false"));
 }

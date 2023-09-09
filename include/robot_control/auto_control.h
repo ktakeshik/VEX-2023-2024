@@ -14,7 +14,6 @@ class Autonomous_Control
 
     float turnMin, turnMax, turnP, driveMin, driveMax, driveP;
 
-
     Autonomous_Control(
         Catapult_Subsystem& catapult_Subsystem,
         Drivetrain_Subsystem& drivetrain_Subsystem,
@@ -28,6 +27,7 @@ class Autonomous_Control
         s_Intake(intake_Subsystem),
         pose_Estimator(pose_Estimator){};
 
+    
     void setTarget(double x_pos, double y_pos, double orientation, bool value);
 
     void setConstraints(double turnMin, double turnMax, double turnP, double driveMin, double driveMax, double driveP);
@@ -35,6 +35,8 @@ class Autonomous_Control
     void turnToTarget(double min, double max, double turnP);
 
     void moveToTarget(double min, double max, double driveP);
+
+    void setDrivetrain(float leftPercent, float rightPercent);
 
     void manueverToTarget(double x_pos, double y_pos, bool value);
 
