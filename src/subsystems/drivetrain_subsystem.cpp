@@ -67,11 +67,13 @@ void Drivetrain_Subsystem::setBrakeMode(int mode)
     m_right_ext.set_brake_mode(brake_mode[mode]);
 }
 
-double Drivetrain_Subsystem::getLeftPost() {
+double Drivetrain_Subsystem::getLeftPost() 
+{
     return m_left_front.get_position() / Constants::Drivetrain::GEAR_REDUCTION;
 }
 
-double Drivetrain_Subsystem::getRightPost() {
+double Drivetrain_Subsystem::getRightPost() 
+{
     return m_right_front.get_position() / Constants::Drivetrain::GEAR_REDUCTION;
 }
 
@@ -79,12 +81,14 @@ bool Drivetrain_Subsystem::getExtension(){
     return isFlapsExtended; 
 }
 
-void Drivetrain_Subsystem::toggleExtension(){
+void Drivetrain_Subsystem::toggleExtension()
+{
     isFlapsExtended = !isFlapsExtended;
     s_flaps_extension.set_value(isFlapsExtended);
 }
 
-void Drivetrain_Subsystem::setExtension(bool value){
+void Drivetrain_Subsystem::setExtension(bool value)
+{
     s_flaps_extension.set_value(value);
     isFlapsExtended = value;
 }

@@ -148,7 +148,8 @@ double Pose_Estimator ::getAngleToTarget()
         tempNum = atan(x_pos_relative/y_pos_relative);
     }
 
-    if (rearToTarget() == true) {
+    if (rearToTarget() == true) 
+    {
         if(y_pos_relative > 0 && x_pos_relative > 0)
         {
             tempNum -= Constants::PI;
@@ -158,7 +159,8 @@ double Pose_Estimator ::getAngleToTarget()
             tempNum += Constants::PI;
         }
     }
-    else {
+    else 
+    {
         if(y_pos_relative < 0 && x_pos_relative < 0)
         {
             tempNum -= Constants::PI;
@@ -175,14 +177,19 @@ double Pose_Estimator ::getAngleToTarget()
         originToAngle += copysign((2 * Constants::PI), originToAngle);
     }
 
+    // if(fabs(originToAngle) > 180)
+    // {
+    //     originToAngle -= copysign((2 * Constants::PI), originToAngle);
+    // }
+
     return originToAngle * (180/Constants::PI);
 }
 
 double Pose_Estimator ::getDistanceToTarget()
 {
-    double x_pos_relative = targetStruct.x_position - poseStruct.x_position;
-    double y_pos_relative = targetStruct.y_position - poseStruct.y_position;
-    double tempNum = sqrt(pow(x_pos_relative, 2) + pow(y_pos_relative, 2));
+    double x_pos_relative {targetStruct.x_position - poseStruct.x_position};
+    double y_pos_relative {targetStruct.y_position - poseStruct.y_position};
+    double tempNum {sqrt(pow(x_pos_relative, 2) + pow(y_pos_relative, 2))};
     return (rearToTarget() == true) ? -tempNum : tempNum;
 }
 

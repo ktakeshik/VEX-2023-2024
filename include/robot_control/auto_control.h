@@ -36,6 +36,10 @@ class Autonomous_Control
 
     void moveToTarget(double min, double max, double driveP);
 
+    void turnToAngle(double min, double max, double turnP, double desiredAngle);
+
+    void moveDistance(double min, double max, double driveP, double desiredDistance);
+
     void setDrivetrain(float leftPercent, float rightPercent);
 
     void manueverToTarget(double x_pos, double y_pos, bool value);
@@ -46,7 +50,11 @@ class Autonomous_Control
 
     void launchCatapult();
 
+    void setCatapultDown();
+
     void setCatapultMid();
+
+    void setCatapult(double value);
 
     void deployElevation(bool state);
 

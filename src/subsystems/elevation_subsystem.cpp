@@ -13,16 +13,19 @@ Elevation_Subsystem::Elevation_Subsystem ()
     m_intake_configurator.set_brake_mode(Constants::Intake::M_INTAKE_BRAKE_MODE);
 }
 
-bool Elevation_Subsystem::getExtension(){
+bool Elevation_Subsystem::getExtension()
+{
     return isArmOut;
 }
 
-void Elevation_Subsystem::toggleExtension(){
+void Elevation_Subsystem::toggleExtension()
+{
     isArmOut = !isArmOut;
     s_arm_extension.set_value(isArmOut);
 }
 
-void Elevation_Subsystem::setExtension(bool value){
+void Elevation_Subsystem::setExtension(bool value)
+{
     s_arm_extension.set_value(value);
     isArmOut = value;
 }

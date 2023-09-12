@@ -14,21 +14,25 @@ Intake_Subsystem::Intake_Subsystem ()
     m_intake_configurator.set_brake_mode(Constants::Intake::M_INTAKE_BRAKE_MODE);
 }
 
-bool Intake_Subsystem::getExtension(){
+bool Intake_Subsystem::getExtension()
+{
     return isIntakeOut;
 }
 
-void Intake_Subsystem::toggleExtension(){
+void Intake_Subsystem::toggleExtension()
+{
     isIntakeOut = !isIntakeOut;
     s_intake_extension.set_value(isIntakeOut);
 }
 
-void Intake_Subsystem::setExtension(bool value){
+void Intake_Subsystem::setExtension(bool value)
+{
     s_intake_extension.set_value(value);
     isIntakeOut = value;
 }
 
-void Intake_Subsystem::intakeControl(float percentOut){
+void Intake_Subsystem::intakeControl(float percentOut)
+{
     percentOut *= 600;
     m_intake.move_velocity(percentOut);
 }

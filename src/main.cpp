@@ -24,11 +24,13 @@ Teleoperation_Control r_Teleop = Teleoperation_Control(s_Catapult, s_Drivetrain,
  * All other competition modes are blocked by initialize; it is recommended
  * to keep execution time for this mode under a few seconds.
  */
-void initialize() {
+void initialize() 
+{
 	pros::lcd::initialize();
 	s_Pose.zeroOutPosition();
 	
-	pros::Task printTask{[] {
+	pros::Task printTask{[] 
+	{
 		while(true)
 		{
 			s_Catapult.printTask();
@@ -40,7 +42,8 @@ void initialize() {
 		}
 	}};
 
-	pros::Task poseTask{[] {
+	pros::Task poseTask{[] 
+	{
 		while(true)
 		{
 			s_Pose.positionCalc(s_Drivetrain.getLeftPost(), s_Drivetrain.getRightPost());
@@ -48,7 +51,8 @@ void initialize() {
 		}
 	}};
 
-	pros::Task catapultTask{[] {
+	pros::Task catapultTask{[] 
+	{
 		while(true)
 		{
 			r_Teleop.catapultControl();
@@ -86,11 +90,13 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {
+void autonomous() 
+{
 	r_Auto.setAutoPath(Autonomous_Paths::LEFT_PATH);
 	s_Pose.zeroOutPosition();
 
-	switch (r_Auto.getAutoPath()) {
+	switch (r_Auto.getAutoPath()) 
+	{
 		case Autonomous_Paths::NONE:
 		break;
 		
@@ -126,7 +132,8 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-	pros::Task teleOp{[] {
+	pros::Task teleOp{[] 
+	{
 		r_Teleop.teleopControl();
 	}};
 }
