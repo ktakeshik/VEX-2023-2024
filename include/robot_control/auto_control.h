@@ -7,12 +7,21 @@
 #include "subsystems/elevation_subsystem.h"
 #include "subsystems/intake_subsystem.h"
 #include "pose_estimator.h"
+#include "pid_controller.h"
 
 class Autonomous_Control
 {
+    private:
+
+    PID_Controller rotationController;
+    PID_Controller accelerationController;
+
+    float maxAcceleration;
+    float previousSpeed;
+
     public:
 
-    float turnMin, turnMax, turnP, driveMin, driveMax, driveP;
+    float turnMin, turnMax, driveMin, driveMax;
 
     Autonomous_Control(
         Catapult_Subsystem& catapult_Subsystem,
@@ -25,20 +34,29 @@ class Autonomous_Control
         s_Drivetrain(drivetrain_Subsystem), 
         s_Elevation(elevation_Subsystem),
         s_Intake(intake_Subsystem),
-        pose_Estimator(pose_Estimator){};
+        pose_Estimator(pose_Estimator){
+        rotationController.setPGain(PIDConstants::K_ROTATION_P);
+        rotationController.setIGain(PIDConstants::K_ROTATION_I);
+        rotationController.setDGain(PIDConstants::K_ROTATION_D);
+        rotationController.setFFGain(PIDConstants::K_ROTATION_FF);
 
+        accelerationController.setPGain(PIDConstants::K_ACCELERATION_P);
+        accelerationController.setIGain(PIDConstants::K_ACCELERATION_I);
+        accelerationController.setDGain(PIDConstants::K_ACCELERATION_D);
+        accelerationController.setFFGain(PIDConstants::K_ACCELERATION_FF);
+    };
     
     void setTarget(double x_pos, double y_pos, double orientation, bool value);
 
-    void setConstraints(double turnMin, double turnMax, double turnP, double driveMin, double driveMax, double driveP);
+    void setConstraints(double rotateMin, double rotateMax, double moveMin, double moveMax);
 
-    void turnToTarget(double min, double max, double turnP);
+    void turnToTarget(double min, double max);
 
-    void moveToTarget(double min, double max, double driveP);
+    void moveToTarget(double min, double max);
 
-    void turnToAngle(double min, double max, double turnP, double desiredAngle);
+    void turnToAngle(double min, double max, double desiredAngle);
 
-    void moveDistance(double min, double max, double driveP, double desiredDistance);
+    void moveDistance(double min, double max, double desiredDistance);
 
     void setDrivetrain(float leftPercent, float rightPercent);
 

@@ -1,19 +1,17 @@
 #include "catapult_subsystem.h"
 
-using namespace Constants::Catapult;
-
 Catapult_Subsystem::Catapult_Subsystem ()
-:   m_catapult(MP_CATAPULT),
-    s_rotation(SP_ROTATION)
+:   m_catapult(CatapultConstants::MP_CATAPULT),
+    s_rotation(CatapultConstants::SP_ROTATION)
 {
     //Motor Configuration & Intialization
-    pros::Motor m_catapult_configurator(MP_CATAPULT,
-        MOTOR_GEARSET_06, M_CATAPULT_REVERSED, 
+    pros::Motor m_catapult_configurator(CatapultConstants::MP_CATAPULT,
+        MOTOR_GEARSET_06, CatapultConstants::M_CATAPULT_REVERSED, 
         MOTOR_ENCODER_ROTATIONS);
     
-    m_catapult_configurator.set_brake_mode(M_CATAPULT_BRAKE_MODE);
+    m_catapult_configurator.set_brake_mode(CatapultConstants::M_CATAPULT_BRAKE_MODE);
 
-    s_rotation.set_reversed(S_ROTATION_REVERSED);
+    s_rotation.set_reversed(CatapultConstants::S_ROTATION_REVERSED);
 
     setCatapultState(Catapult_Subsystem::STAY_UP);
     setSaftey(true);
@@ -21,21 +19,21 @@ Catapult_Subsystem::Catapult_Subsystem ()
 
 bool Catapult_Subsystem::isCatapultDown() 
 {
-    return (s_rotation.get_angle() < CATAPULT_MINIMUM_ANGLE &&
-        s_rotation.get_angle() > CATAPUL_MAXIMUM_ANGLE) ?
+    return (s_rotation.get_angle() < CatapultConstants::CATAPULT_MINIMUM_ANGLE &&
+        s_rotation.get_angle() > CatapultConstants::CATAPUL_MAXIMUM_ANGLE) ?
         true : false;
 }
 
 bool Catapult_Subsystem::isCatapultMiddle() 
 {
-    return (s_rotation.get_angle() < CATAPULT_MID_MIN_ANGLE &&
-        s_rotation.get_angle() > CATAPUL_MID_MAX_ANGLE) ?
+    return (s_rotation.get_angle() < CatapultConstants::CATAPULT_MID_MIN_ANGLE &&
+        s_rotation.get_angle() > CatapultConstants::CATAPUL_MID_MAX_ANGLE) ?
         true : false;
 }
 
 bool Catapult_Subsystem::isCatapultUp() 
 {
-    return (s_rotation.get_angle() > CATAPULT_UP_ANGLE) ?
+    return (s_rotation.get_angle() > CatapultConstants::CATAPULT_UP_ANGLE) ?
         true : false;
 }
 

@@ -6,17 +6,15 @@ void Autonomous_Control::setTarget(double x_pos, double y_pos, double orientatio
     pose_Estimator.setRearToTarget(value);
 }
 
-void Autonomous_Control::setConstraints(double rotateMin, double rotateMax, double rotateP, double moveMin, double moveMax, double moveP) 
+void Autonomous_Control::setConstraints(double rotateMin, double rotateMax, double moveMin, double moveMax) 
 {
     turnMin = rotateMin;
     turnMax = rotateMax;
-    turnP = rotateP;
     driveMin = moveMin;
     driveMax = moveMax;
-    driveP = moveP;
 }
 
-void Autonomous_Control::turnToTarget(double min, double max, double turnP)
+void Autonomous_Control::turnToTarget(double min, double max)
 {
     double angleToTarget;
     double velocity;
@@ -28,11 +26,10 @@ void Autonomous_Control::turnToTarget(double min, double max, double turnP)
 
     while(!pose_Estimator.isRobotFacingTarget())
     {
-        angleToTarget = pose_Estimator.getAngleToTarget();
-        velocity = angleToTarget * turnP;
-        velocity /= 100;
+        rotationController.setError(pose_Estimator.getAngleToTarget());
+        velocity = rotationController.getOutput();
         velocity = (velocity < min) ? min : ((velocity > max) ? max : velocity);
-        velocity = copysign(velocity, angleToTarget);
+        velocity = copysign(velocity, rotationController.getError());
 
         s_Drivetrain.drivetrainControl(velocity, -velocity);
         pros::delay(20);
@@ -41,7 +38,7 @@ void Autonomous_Control::turnToTarget(double min, double max, double turnP)
     s_Drivetrain.stopControl();
 }
 
-void Autonomous_Control::moveToTarget(double min, double max, double driveP)
+void Autonomous_Control::moveToTarget(double min, double max)
 {
     double distanceToTarget;
     double angleToTarget;
@@ -55,15 +52,15 @@ void Autonomous_Control::moveToTarget(double min, double max, double driveP)
 
     while(!pose_Estimator.isRobotAtTarget())
     {
-        angleToTarget = pose_Estimator.getAngleToTarget();
-        distanceToTarget = pose_Estimator.getDistanceToTarget();
-        velocity = distanceToTarget * driveP;
+        accelerationController.setError(pose_Estimator.getDistanceToTarget());
+        velocity = accelerationController.getOutput();
         velocity /= 100;
         velocity = (velocity < min) ? min : ((velocity > max) ? max : velocity);
-        velocity = copysign(velocity, distanceToTarget);
+        velocity = copysign(velocity, accelerationController.getError());
 
-        courseCorrection = angleToTarget/100 * velocity;
-        courseCorrection = copysign(courseCorrection, angleToTarget);
+        rotationController.setError(pose_Estimator.getAngleToTarget());
+        courseCorrection = rotationController.getOutput()/100 * velocity;
+        courseCorrection = copysign(courseCorrection, rotationController.getError());
 
         s_Drivetrain.drivetrainControl(velocity + courseCorrection, velocity - courseCorrection);
         pros::delay(20);
@@ -72,28 +69,28 @@ void Autonomous_Control::moveToTarget(double min, double max, double driveP)
     s_Drivetrain.stopControl();
 }
 
-void Autonomous_Control::turnToAngle(double min, double max, double turnP, double desiredAngle) 
+void Autonomous_Control::turnToAngle(double min, double max, double desiredAngle) 
 {
     double angleToTarget;
     double velocity;
 
     do 
     {
-        angleToTarget = desiredAngle - pose_Estimator.getOrientation();
-        velocity = angleToTarget * turnP;
+        rotationController.setError(desiredAngle - pose_Estimator.getOrientation());
+        velocity = rotationController.getOutput();
         velocity /= 100;
         velocity = (velocity < min) ? min : ((velocity > max) ? max : velocity);
-        velocity = copysign(velocity, angleToTarget);
+        velocity = copysign(velocity, rotationController.getError());
 
         s_Drivetrain.drivetrainControl(velocity, -velocity);
         pros::delay(20);
     }
-    while (angleToTarget > 1);
+    while (rotationController.getError() > 1);
 
     s_Drivetrain.stopControl();
 }
 
-void Autonomous_Control::moveDistance(double min, double max, double driveP, double desiredDistance)
+void Autonomous_Control::moveDistance(double min, double max, double desiredDistance)
 {
     double distanceToTarget;
     double currentDistance{s_Drivetrain.getLeftPost()};
@@ -102,26 +99,22 @@ void Autonomous_Control::moveDistance(double min, double max, double driveP, dou
     double velocity;
     double courseCorrection;
 
-    if(pose_Estimator.isRobotAtTarget())
+    do 
     {
-        return;
-    }
-
-    while(!pose_Estimator.isRobotAtTarget())
-    {
-        distanceToTarget = (desiredDistance + currentDistance) - s_Drivetrain.getLeftPost();
-        velocity = distanceToTarget * driveP;
+        accelerationController.setError((desiredDistance + currentDistance) - s_Drivetrain.getLeftPost());
+        velocity = accelerationController.getOutput();
         velocity /= 100;
         velocity = (velocity < min) ? min : ((velocity > max) ? max : velocity);
-        velocity = copysign(velocity, distanceToTarget);
+        velocity = copysign(velocity, accelerationController.getError());
 
-        angleToTarget = currentAngle - pose_Estimator.getOrientation();
-        courseCorrection = angleToTarget/100 * velocity;
-        courseCorrection = copysign(courseCorrection, angleToTarget);
+         rotationController.setError(pose_Estimator.getAngleToTarget());
+        courseCorrection = rotationController.getOutput()/100 * velocity;
+        courseCorrection = copysign(courseCorrection, rotationController.getError());
 
         s_Drivetrain.drivetrainControl(velocity + courseCorrection, velocity - courseCorrection);
         pros::delay(20);
     }
+    while (accelerationController.getError() > 1);
 
     s_Drivetrain.stopControl();
 }
@@ -134,8 +127,8 @@ void Autonomous_Control::setDrivetrain(float leftPercent, float rightPercent)
 void Autonomous_Control::manueverToTarget(double x_pos, double y_pos, bool value) 
 {
     setTarget(x_pos, y_pos, 0, value);
-    turnToTarget(turnMin, turnMax, turnP);
-    moveToTarget(driveMin, driveMax, driveP);
+    turnToTarget(turnMin, turnMax);
+    moveToTarget(driveMin, driveMax);
 }
 
 void Autonomous_Control::deployIntake(bool state)

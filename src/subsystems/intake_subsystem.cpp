@@ -1,17 +1,17 @@
 #include "intake_subsystem.h"
 
 Intake_Subsystem::Intake_Subsystem ()
-:   m_intake(Constants::Intake::MP_INTAKE), 
-    s_intake_extension(Constants::Intake::SP_INTAKE)
+:   m_intake(IntakeConstants::MP_INTAKE), 
+    s_intake_extension(IntakeConstants::SP_INTAKE)
 {
     //Motor Configuration & Intialization
-    pros::Motor m_intake_configurator(Constants::Intake::MP_INTAKE,
-        MOTOR_GEARSET_06, Constants::Intake::M_INTAKE_REVERSED, 
+    pros::Motor m_intake_configurator(IntakeConstants::MP_INTAKE,
+        MOTOR_GEARSET_06, IntakeConstants::M_INTAKE_REVERSED, 
         MOTOR_ENCODER_ROTATIONS);
 
     isIntakeOut = false;
     
-    m_intake_configurator.set_brake_mode(Constants::Intake::M_INTAKE_BRAKE_MODE);
+    m_intake_configurator.set_brake_mode(IntakeConstants::M_INTAKE_BRAKE_MODE);
 }
 
 bool Intake_Subsystem::getExtension()

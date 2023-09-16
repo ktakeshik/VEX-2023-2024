@@ -3,13 +3,13 @@
 
 void Autonomous_Paths::test() 
 {
-    r_Auto.deployIntake(true);
-    r_Auto.setCatapult(1);
+    r_Auto.setTarget(0, -5, 0, true);
+    r_Auto.turnToTarget(0.05, 1);
 }
 
 void Autonomous_Paths::leftPath() 
 {
-    r_Auto.setConstraints(0.05, 0.6, 0.9, 0.4, 1, 1.5);
+    r_Auto.setConstraints(0.05, 0.6, 0.4, 1.5);
     r_Auto.manueverToTarget(8, -20, true);
     r_Auto.setDrivetrain(-0.7, -0.7);
     pros::delay(250);
@@ -41,13 +41,13 @@ void Autonomous_Paths::leftPath()
 
 void Autonomous_Paths::rightPath() 
 {
-    r_Auto.setConstraints(0.05, 0.6, 0.9, 0.4, 1, 1.5);
+    r_Auto.setConstraints(0.05, 0.6, 0.4, 1.5);
     r_Auto.manueverToTarget(-10, -20, true);
     r_Auto.setDrivetrain(-0.5, -0.5);
     pros::delay(250);
     r_Auto.setDrivetrain(0.3, 0.3);
     pros::delay(700);
-    r_Auto.setConstraints(0.05, 0.6, 0.9, 0.25, 1, 1.5);
+    r_Auto.setConstraints(0.05, 0.6, 0.25, 1.5);
     r_Auto.manueverToTarget(15, -4, false);
     r_Auto.deployIntake(true);
     r_Auto.setCatapultMid();
@@ -67,7 +67,7 @@ void Autonomous_Paths::rightPath()
 
 void Autonomous_Paths::skillsPath() 
 {
-    r_Auto.setConstraints(0.05, 0.6, 0.9, 0.4, 1, 1.5);
+    r_Auto.setConstraints(0.05, 0.6, 0.4, 1.5);
     r_Auto.manueverToTarget(8, -20, true);
     r_Auto.setDrivetrain(-0.7, -0.7);
     pros::delay(250);

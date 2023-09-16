@@ -1,50 +1,50 @@
 #include "drivetrain_subsystem.h"
 
 Drivetrain_Subsystem::Drivetrain_Subsystem ()
-:   m_left_front(Constants::Drivetrain::MP_LEFT_FRONT), 
-    m_left_rear(Constants::Drivetrain::MP_LEFT_REAR),
-    m_left_ext(Constants::Drivetrain::MP_LEFT_EXT), 
-    m_right_front(Constants::Drivetrain::MP_RIGHT_FRONT), 
-    m_right_rear(Constants::Drivetrain::MP_RIGHT_REAR),
-    m_right_ext(Constants::Drivetrain::MP_RIGHT_EXT),
+:   m_left_front(DrivetrainConstants::MP_LEFT_FRONT), 
+    m_left_rear(DrivetrainConstants::MP_LEFT_REAR),
+    m_left_ext(DrivetrainConstants::MP_LEFT_EXT), 
+    m_right_front(DrivetrainConstants::MP_RIGHT_FRONT), 
+    m_right_rear(DrivetrainConstants::MP_RIGHT_REAR),
+    m_right_ext(DrivetrainConstants::MP_RIGHT_EXT),
     mg_left({m_left_front, m_left_rear}),
     mg_right({m_right_front, m_right_rear}),
-    s_flaps_extension{Constants::Drivetrain::SP_FLAPS}
+    s_flaps_extension{DrivetrainConstants::SP_FLAPS}
 {
     //Motor Configuration & Intialization
-    pros::Motor m_left_front_configurator(Constants::Drivetrain::MP_LEFT_FRONT,
-        MOTOR_GEARSET_06, Constants::Drivetrain::M_LEFT_FRONT_REVERSED, 
+    pros::Motor m_left_front_configurator(DrivetrainConstants::MP_LEFT_FRONT,
+        MOTOR_GEARSET_06, DrivetrainConstants::M_LEFT_FRONT_REVERSED, 
         MOTOR_ENCODER_ROTATIONS);
     
-    pros::Motor m_left_rear_configurator(Constants::Drivetrain::MP_LEFT_REAR,
-        MOTOR_GEARSET_06, Constants::Drivetrain::M_LEFT_REAR_REVERSED,
+    pros::Motor m_left_rear_configurator(DrivetrainConstants::MP_LEFT_REAR,
+        MOTOR_GEARSET_06, DrivetrainConstants::M_LEFT_REAR_REVERSED,
         MOTOR_ENCODER_ROTATIONS);
 
-    pros::Motor m_left_ext_configurator(Constants::Drivetrain::MP_LEFT_EXT,
-        MOTOR_GEARSET_06, Constants::Drivetrain::M_LEFT_EXT_REVERSED,
+    pros::Motor m_left_ext_configurator(DrivetrainConstants::MP_LEFT_EXT,
+        MOTOR_GEARSET_06, DrivetrainConstants::M_LEFT_EXT_REVERSED,
         MOTOR_ENCODER_ROTATIONS);
 
-    pros::Motor m_right_front_configurator(Constants::Drivetrain::MP_RIGHT_FRONT, 
-        MOTOR_GEARSET_06, Constants::Drivetrain::M_RIGHT_FRONT_REVERSED, 
+    pros::Motor m_right_front_configurator(DrivetrainConstants::MP_RIGHT_FRONT, 
+        MOTOR_GEARSET_06, DrivetrainConstants::M_RIGHT_FRONT_REVERSED, 
         MOTOR_ENCODER_ROTATIONS);
     
     
-    pros::Motor m_right_rear_configurator(Constants::Drivetrain::MP_RIGHT_REAR, 
-        MOTOR_GEARSET_06, Constants::Drivetrain::M_RIGHT_REAR_REVERSED, 
+    pros::Motor m_right_rear_configurator(DrivetrainConstants::MP_RIGHT_REAR, 
+        MOTOR_GEARSET_06, DrivetrainConstants::M_RIGHT_REAR_REVERSED, 
         MOTOR_ENCODER_ROTATIONS);
 
-    pros::Motor m_right_ext_configurator(Constants::Drivetrain::MP_RIGHT_EXT,
-        MOTOR_GEARSET_06, Constants::Drivetrain::M_RIGHT_EXT_REVERSED,
+    pros::Motor m_right_ext_configurator(DrivetrainConstants::MP_RIGHT_EXT,
+        MOTOR_GEARSET_06, DrivetrainConstants::M_RIGHT_EXT_REVERSED,
         MOTOR_ENCODER_ROTATIONS);
 
-    mg_left.set_brake_modes(Constants::Drivetrain::MG_LEFT_BRAKE_MODE);
-    mg_right.set_brake_modes(Constants::Drivetrain::MG_RIGHT_BRAKE_MODE);
+    mg_left.set_brake_modes(DrivetrainConstants::MG_LEFT_BRAKE_MODE);
+    mg_right.set_brake_modes(DrivetrainConstants::MG_RIGHT_BRAKE_MODE);
 
-    m_left_ext.set_brake_mode(Constants::Drivetrain::MG_LEFT_BRAKE_MODE);
-    m_right_ext.set_brake_mode(Constants::Drivetrain::MG_RIGHT_BRAKE_MODE);
+    m_left_ext.set_brake_mode(DrivetrainConstants::MG_LEFT_BRAKE_MODE);
+    m_right_ext.set_brake_mode(DrivetrainConstants::MG_RIGHT_BRAKE_MODE);
 
-    mg_left.set_reversed(Constants::Drivetrain::MG_LEFT_REVERSED);
-    mg_right.set_reversed(Constants::Drivetrain::MG_RIGHT_REVERSED);
+    mg_left.set_reversed(DrivetrainConstants::MG_LEFT_REVERSED);
+    mg_right.set_reversed(DrivetrainConstants::MG_RIGHT_REVERSED);
 
     mg_left.set_encoder_units(MOTOR_ENCODER_ROTATIONS);
     mg_right.set_encoder_units(MOTOR_ENCODER_ROTATIONS);
@@ -69,12 +69,12 @@ void Drivetrain_Subsystem::setBrakeMode(int mode)
 
 double Drivetrain_Subsystem::getLeftPost() 
 {
-    return m_left_front.get_position() / Constants::Drivetrain::GEAR_REDUCTION;
+    return m_left_front.get_position() / DrivetrainConstants::GEAR_REDUCTION;
 }
 
 double Drivetrain_Subsystem::getRightPost() 
 {
-    return m_right_front.get_position() / Constants::Drivetrain::GEAR_REDUCTION;
+    return m_right_front.get_position() / DrivetrainConstants::GEAR_REDUCTION;
 }
 
 bool Drivetrain_Subsystem::getExtension(){

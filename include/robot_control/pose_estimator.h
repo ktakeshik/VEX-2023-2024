@@ -7,6 +7,8 @@ class Pose_Estimator {
     private:
 
     //Sensors
+    pros::Rotation s_left_rotation;
+	pros::Rotation s_right_rotation;
     pros::Imu s_inertial;
 
     //Odometry
@@ -37,15 +39,15 @@ class Pose_Estimator {
     //Methods
     void zeroOutPosition();
 
-    double getDistance(double position, double wheel_diameter);
+    double getDistance(pros::Rotation s_rotation, double wheel_diameter);
 
-    double getInchesTraveled(double position, std::string string, double wheel_diameter);
+    double getInchesTraveled(pros::Rotation s_rotation, std::string string, double wheel_diameter);
 
-    double angleCalc(double left_position, double right_position);
+    double angleCalc();
 
-    double distanceCalc(double left_position, double right_position);
+    double distanceCalc();
 
-    void positionCalc(double left_position, double right_position);
+    void positionCalc();
 
     void setTarget(double orientation, double x_position, double y_position);
 

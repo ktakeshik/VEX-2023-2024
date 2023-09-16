@@ -46,7 +46,7 @@ void initialize()
 	{
 		while(true)
 		{
-			s_Pose.positionCalc(s_Drivetrain.getLeftPost(), s_Drivetrain.getRightPost());
+			s_Pose.positionCalc();
 			pros::delay(5);
 		}
 	}};
@@ -92,7 +92,7 @@ void competition_initialize() {}
  */
 void autonomous() 
 {
-	r_Auto.setAutoPath(Autonomous_Paths::LEFT_PATH);
+	r_Auto.setAutoPath(Autonomous_Paths::TESTING);
 	s_Pose.zeroOutPosition();
 
 	switch (r_Auto.getAutoPath()) 
