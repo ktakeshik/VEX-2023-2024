@@ -125,11 +125,14 @@ bool Pose_Estimator ::isTargetAtOrigin()
 double Pose_Estimator::getAngleToTarget()
 {
     double tempNum;
-    double orientation = rearToTarget() ? 180 - poseStruct.angle : poseStruct.angle;
+    double orientation = poseStruct.angle;
     double originToAngle;
 
     float origin_x = 0;
     float origin_y = 1;
+    if (rearToTarget()) {
+        origin_y = -1;
+    }
 
     double x_pos_relative = targetStruct.x_position - poseStruct.x_position;
     double y_pos_relative = targetStruct.y_position - poseStruct.y_position;
@@ -139,9 +142,9 @@ double Pose_Estimator::getAngleToTarget()
         return 0;
     }
 
-    if(orientation > MiscConstants::PI)
+    if(poseStruct.angle > MiscConstants::PI)
     {
-        orientation = orientation - (2 * MiscConstants::PI);
+        orientation = poseStruct.angle - (2 * MiscConstants::PI);
     }
 
     tempNum = atan2(x_pos_relative, y_pos_relative) - atan2(origin_x, origin_y);

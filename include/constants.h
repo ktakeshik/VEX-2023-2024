@@ -12,7 +12,7 @@ namespace PIDConstants {
     const float K_ROTATION_D {0};
     const float K_ROTATION_FF {0};
 
-    const float K_ACCELERATION_P {1};
+    const float K_ACCELERATION_P {0.5};
     const float K_ACCELERATION_I {0};
     const float K_ACCELERATION_D {0};
     const float K_ACCELERATION_FF {0};

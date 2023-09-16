@@ -3,8 +3,7 @@
 
 void Autonomous_Paths::test() 
 {
-    r_Auto.setTarget(0, -5, 0, true);
-    r_Auto.turnToTarget(0.05, 1);
+    r_Auto.manueverToTarget(0, 24, true);
 }
 
 void Autonomous_Paths::leftPath() 
