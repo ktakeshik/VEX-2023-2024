@@ -8,12 +8,12 @@ namespace MiscConstants {
 
 namespace PIDConstants {
     const float K_ROTATION_P {0.00625};
-    const float K_ROTATION_I {0};
-    const float K_ROTATION_D {0};
+    const float K_ROTATION_I {0.00001};
+    const float K_ROTATION_D {0}; 
     const float K_ROTATION_FF {0};
 
-    const float K_ACCELERATION_P {0.5};
-    const float K_ACCELERATION_I {0};
+    const float K_ACCELERATION_P {2};
+    const float K_ACCELERATION_I {0.025};
     const float K_ACCELERATION_D {0};
     const float K_ACCELERATION_FF {0};
 }

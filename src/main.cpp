@@ -92,7 +92,7 @@ void competition_initialize() {}
  */
 void autonomous() 
 {
-	r_Auto.setAutoPath(Autonomous_Paths::TESTING);
+	r_Auto.setAutoPath(Autonomous_Paths::SKILLS_PATH);
 	s_Pose.zeroOutPosition();
 
 	switch (r_Auto.getAutoPath()) 

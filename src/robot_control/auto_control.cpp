@@ -26,10 +26,10 @@ void Autonomous_Control::turnToTarget(double min, double max)
 
     while(!pose_Estimator.isRobotFacingTarget())
     {
-        rotationController.setError(pose_Estimator.getAngleToTarget());
+        rotationController.setError(fabs(pose_Estimator.getAngleToTarget()));
         velocity = rotationController.getOutput();
         velocity = (velocity < min) ? min : ((velocity > max) ? max : velocity);
-        velocity = copysign(velocity, rotationController.getError());
+        velocity = copysign(velocity, pose_Estimator.getAngleToTarget());
 
         s_Drivetrain.drivetrainControl(velocity, -velocity);
         pros::delay(20);
@@ -52,11 +52,11 @@ void Autonomous_Control::moveToTarget(double min, double max)
 
     while(!pose_Estimator.isRobotAtTarget())
     {
-        accelerationController.setError(pose_Estimator.getDistanceToTarget());
+        accelerationController.setError(fabs(pose_Estimator.getDistanceToTarget()));
         velocity = accelerationController.getOutput();
         velocity /= 100;
         velocity = (velocity < min) ? min : ((velocity > max) ? max : velocity);
-        velocity = copysign(velocity, accelerationController.getError());
+        velocity = copysign(velocity, pose_Estimator.getDistanceToTarget());
 
         rotationController.setError(pose_Estimator.getAngleToTarget());
         courseCorrection = rotationController.getOutput()/100 * velocity;

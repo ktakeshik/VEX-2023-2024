@@ -3,7 +3,8 @@
 
 void Autonomous_Paths::test() 
 {
-    r_Auto.manueverToTarget(0, 24, true);
+    r_Auto.setConstraints(0.05, 1, 0.05, 1);
+    r_Auto.manueverToTarget(24, 12, true);
 }
 
 void Autonomous_Paths::leftPath() 
@@ -66,28 +67,8 @@ void Autonomous_Paths::rightPath()
 
 void Autonomous_Paths::skillsPath() 
 {
-    r_Auto.setConstraints(0.05, 0.6, 0.4, 1.5);
-    r_Auto.manueverToTarget(8, -20, true);
-    r_Auto.setDrivetrain(-0.7, -0.7);
-    pros::delay(250);
-    r_Auto.setDrivetrain(0.3, 0.3);
-    r_Auto.deployIntake(true);
-    pros::delay(350);
-    r_Auto.setDrivetrain(-0.5,0.5);
-    pros::delay(115);
-    r_Auto.setDrivetrain(0.5,0.5);
-    pros::delay(600);
-    r_Auto.setDrivetrain(0,0);
-    pros::delay(100);
-    r_Auto.setDrivetrain(0.5,-0.5);
-    r_Auto.setCatapultDown();
-    pros::delay(400);
-    r_Auto.setDrivetrain(0.5,0.5);
-    pros::delay(500);
-    r_Auto.setDrivetrain(0.2,-0.2);
-    pros::delay(500);
-    r_Auto.setDrivetrain(0,0);
-    r_Auto.setCatapult(1);
+    r_Auto.setConstraints(0.05, 1, 0.05, 1);
+    r_Auto.manueverToTarget(18, 12, true);
 }
 
 void Autonomous_Paths::setAutoPath(auto_path desiredPath) 

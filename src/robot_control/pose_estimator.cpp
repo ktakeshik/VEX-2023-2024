@@ -32,7 +32,7 @@ void Pose_Estimator::zeroOutPosition()
 double Pose_Estimator::getDistance(pros::Rotation s_rotation, double wheel_diameter)
 {
     double temp {double(s_rotation.get_position())};
-    return temp/36000 * (wheel_diameter * MiscConstants::PI);
+    return temp/36000 * 3/7 * (wheel_diameter * MiscConstants::PI);
 }
 
 double Pose_Estimator ::getInchesTraveled(pros::Rotation s_rotation, std::string string, double wheel_diameter) 
