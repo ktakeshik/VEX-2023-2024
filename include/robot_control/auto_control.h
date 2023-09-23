@@ -12,7 +12,6 @@
 class Autonomous_Control
 {
     private:
-
     PID_Controller rotationController;
     PID_Controller accelerationController;
 
@@ -22,6 +21,8 @@ class Autonomous_Control
     public:
 
     float turnMin, turnMax, driveMin, driveMax;
+    enum endRequirement {fullStop, alignXAxis, alignYAxis, pastPoint};
+    endRequirement requirement;
 
     Autonomous_Control(
         Catapult_Subsystem& catapult_Subsystem,
@@ -44,9 +45,15 @@ class Autonomous_Control
         accelerationController.setIGain(PIDConstants::K_ACCELERATION_I);
         accelerationController.setDGain(PIDConstants::K_ACCELERATION_D);
         accelerationController.setFFGain(PIDConstants::K_ACCELERATION_FF);
+
+        setRequirement(endRequirement::fullStop);
     };
     
-    void setTarget(double x_pos, double y_pos, double orientation, bool value);
+    void setTarget(double x_pos, double y_pos, bool value);
+
+    void setRequirement(endRequirement value);
+
+    bool getRequirementStatus();
 
     void setConstraints(double rotateMin, double rotateMax, double moveMin, double moveMax);
 
@@ -60,13 +67,15 @@ class Autonomous_Control
 
     void setDrivetrain(float leftPercent, float rightPercent);
 
-    void manueverToTarget(double x_pos, double y_pos, bool value);
+    void manueverToTarget(bool rotate, bool move);
 
     void deployIntake(bool state);
 
     void setIntake(float percentOut);
 
     void launchCatapult();
+
+    void setCatapultUp();
 
     void setCatapultDown();
 

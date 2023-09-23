@@ -49,7 +49,7 @@ class Pose_Estimator {
 
     void positionCalc();
 
-    void setTarget(double orientation, double x_position, double y_position);
+    void setTarget(double x_position, double y_position);
 
     bool rearToTarget();
 
@@ -62,6 +62,12 @@ class Pose_Estimator {
     bool isRobotAtOrigin();
 
     bool isTargetAtOrigin();
+
+    bool isRobotPastTarget();
+
+    bool isXAxisAligned();
+
+    bool isYAxisAligned();
 
     double getAngleToTarget();
 

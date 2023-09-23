@@ -87,9 +87,8 @@ void Pose_Estimator ::positionCalc()
     previous_angle = poseStruct.angle;
 }
 
-void Pose_Estimator ::setTarget(double orientation, double x_position, double y_position)
+void Pose_Estimator ::setTarget(double x_position, double y_position)
 {
-    targetStruct.angle = orientation;
     targetStruct.x_position = x_position;
     targetStruct.y_position = y_position;
 }
@@ -122,17 +121,32 @@ bool Pose_Estimator ::isTargetAtOrigin()
     return targetStruct.x_position == 0 && targetStruct.y_position == 0 ? true : false;
 }
 
+bool Pose_Estimator::isRobotPastTarget()
+{
+    return (getDistanceToTarget() < 0) ? true : false;
+}
+
+bool Pose_Estimator::isXAxisAligned()
+{
+    return fabs(targetStruct.x_position - poseStruct.x_position) < 1 ? true : false;
+}
+
+bool Pose_Estimator::isYAxisAligned()
+{
+    return fabs(targetStruct.y_position - poseStruct.y_position) < 1 ? true : false;
+}
+
 double Pose_Estimator::getAngleToTarget()
 {
-    double tempNum;
-    double orientation = poseStruct.angle;
-    double originToAngle;
+    double tempNum = poseStruct.angle + 180;
+    double orientation = rearToTarget() 
+        ? (tempNum > 360 ? tempNum - 360 : tempNum) 
+        : poseStruct.angle;
+        
+    double angleToTarget;
 
-    float origin_x = 0;
-    float origin_y = 1;
-    if (rearToTarget()) {
-        origin_y = -1;
-    }
+    float orientation_vector_x = 0 * cosf(orientation) - 1 * sinf(orientation);
+    float orientation_vector_y = 1 * cosf(orientation) + 0 * sinf(orientation);
 
     double x_pos_relative = targetStruct.x_position - poseStruct.x_position;
     double y_pos_relative = targetStruct.y_position - poseStruct.y_position;
@@ -142,21 +156,19 @@ double Pose_Estimator::getAngleToTarget()
         return 0;
     }
 
-    if(poseStruct.angle > MiscConstants::PI)
+    // if(poseStruct.angle > MiscConstants::PI)
+    // {
+    //     orientation = poseStruct.angle - (2 * MiscConstants::PI);
+    // }
+
+    angleToTarget = atan2(x_pos_relative, y_pos_relative) - atan2(orientation_vector_x, orientation_vector_y);
+
+    if(fabs(angleToTarget) > MiscConstants::PI)
     {
-        orientation = poseStruct.angle - (2 * MiscConstants::PI);
+        angleToTarget -= copysign((2 * MiscConstants::PI), angleToTarget);
     }
 
-    tempNum = atan2(x_pos_relative, y_pos_relative) - atan2(origin_x, origin_y);
-
-    originToAngle = tempNum - orientation;
-
-    if(fabs(originToAngle) > MiscConstants::PI)
-    {
-        originToAngle -= copysign((2 * MiscConstants::PI), originToAngle);
-    }
-
-    return originToAngle * (180/MiscConstants::PI);
+    return angleToTarget * (180/MiscConstants::PI);
 }
 
 double Pose_Estimator ::getDistanceToTarget()
@@ -194,5 +206,5 @@ void Pose_Estimator ::printTask()
 	pros::lcd::print(3, "YPOSITION: %f", getYPosition());
     pros::lcd::print(4, "ANGLE: %f", getAngleToTarget());
 	pros::lcd::print(5, "DISTANCE: %f", getDistanceToTarget());
-    pros::lcd::print(6, (rearToTarget() ? "BOOLEAN BOOLEAN: true" : "BOOLEAN BOOLEAN: false"));
+    pros::lcd::print(6, (isRobotPastTarget() ? "BOOLEAN BOOLEAN: true" : "BOOLEAN BOOLEAN: false"));
 }
