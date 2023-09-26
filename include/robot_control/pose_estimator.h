@@ -7,8 +7,8 @@ class Pose_Estimator {
     private:
 
     //Sensors
-    // pros::Rotation s_left_rotation;
-	// pros::Rotation s_right_rotation;
+    pros::Rotation s_left_rotation;
+	pros::Rotation s_right_rotation;
     pros::Imu s_inertial;
 
     //Odometry
@@ -37,17 +37,19 @@ class Pose_Estimator {
     Pose_Estimator();
 
     //Methods
-    double getDistance(double position, double wheel_diameter);
+    void zeroOutPosition();
 
-    double getInchesTraveled(double position, std::string string, double wheel_diameter);
+    double getDistance(std::string s_rotation, double wheel_diameter);
 
-    double angleCalc(double left_position, double right_position);
+    double getInchesTraveled(pros::Rotation s_rotation, std::string string, double wheel_diameter);
 
-    double distanceCalc(double left_position, double right_position);
+    double angleCalc();
 
-    void positionCalc(double left_position, double right_position);
+    double distanceCalc();
 
-    void setTarget(double orientation, double x_position, double y_position);
+    void positionCalc();
+
+    void setTarget(double x_position, double y_position);
 
     bool rearToTarget();
 
@@ -60,6 +62,12 @@ class Pose_Estimator {
     bool isRobotAtOrigin();
 
     bool isTargetAtOrigin();
+
+    bool isRobotPastTarget();
+
+    bool isXAxisAligned();
+
+    bool isYAxisAligned();
 
     double getAngleToTarget();
 

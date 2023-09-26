@@ -1,34 +1,38 @@
 #include "intake_subsystem.h"
 
 Intake_Subsystem::Intake_Subsystem ()
-:   m_intake(Constants::Intake::MP_INTAKE), 
-    s_intake_extension(Constants::Intake::SP_INTAKE)
+:   m_intake(IntakeConstants::MP_INTAKE), 
+    s_intake_extension(IntakeConstants::SP_INTAKE)
 {
     //Motor Configuration & Intialization
-    pros::Motor m_intake_configurator(Constants::Intake::MP_INTAKE,
-        MOTOR_GEARSET_06, Constants::Intake::M_INTAKE_REVERSED, 
+    pros::Motor m_intake_configurator(IntakeConstants::MP_INTAKE,
+        MOTOR_GEARSET_06, IntakeConstants::M_INTAKE_REVERSED, 
         MOTOR_ENCODER_ROTATIONS);
 
     isIntakeOut = false;
     
-    m_intake_configurator.set_brake_mode(Constants::Intake::M_INTAKE_BRAKE_MODE);
+    m_intake_configurator.set_brake_mode(IntakeConstants::M_INTAKE_BRAKE_MODE);
 }
 
-bool Intake_Subsystem::getExtension(){
+bool Intake_Subsystem::getExtension()
+{
     return isIntakeOut;
 }
 
-void Intake_Subsystem::toggleExtension(){
+void Intake_Subsystem::toggleExtension()
+{
     isIntakeOut = !isIntakeOut;
     s_intake_extension.set_value(isIntakeOut);
 }
 
-void Intake_Subsystem::setExtension(bool value){
+void Intake_Subsystem::setExtension(bool value)
+{
     s_intake_extension.set_value(value);
     isIntakeOut = value;
 }
 
-void Intake_Subsystem::intakeControl(float percentOut){
+void Intake_Subsystem::intakeControl(float percentOut)
+{
     percentOut *= 600;
     m_intake.move_velocity(percentOut);
 }

@@ -2,6 +2,8 @@
 
 void Teleoperation_Control::catapultControl()
 {
+    pros::Controller master(pros::E_CONTROLLER_MASTER);
+
     if (!s_Intake.getExtension()) {
         return;
     }
@@ -36,7 +38,11 @@ void Teleoperation_Control::catapultControl()
             break;
         
         case Catapult_Subsystem::MATCH_LOAD:
-            s_Catapult.catapultControl(1);
+            while (s_Catapult.getSaftey()) 
+            {
+                s_Catapult.catapultControl(1);
+            }
+            s_Catapult.stopCatapult();
             break;
 
         case Catapult_Subsystem::STAY_UP:
@@ -103,10 +109,11 @@ void Teleoperation_Control::teleopControl()
         if (master.get_digital(DIGITAL_R1)) {
             s_Catapult.setCatapultState(Catapult_Subsystem::LAUNCH_TRIBALL);
         }
-        else if (master.get_digital(DIGITAL_R2)) {
+        else if (master.get_digital_new_press(DIGITAL_R2)) {
+            s_Catapult.toggleSaftey();
             s_Catapult.setCatapultState(Catapult_Subsystem::MATCH_LOAD);
         }
-        else if (!master.get_digital_new_press(DIGITAL_R1) 
+        else if (!master.get_digital_new_press(DIGITAL_R1)
             && !master.get_digital(DIGITAL_R2) 
             && !s_Catapult.getSaftey()) {
             s_Catapult.setCatapultState(Catapult_Subsystem::DEFAULT_STATE);
