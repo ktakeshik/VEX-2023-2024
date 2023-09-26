@@ -29,9 +29,9 @@ void Pose_Estimator::zeroOutPosition()
     targetStruct.y_position = 0;
 }
 
-double Pose_Estimator::getDistance(pros::Rotation s_rotation, double wheel_diameter)
+double Pose_Estimator::getDistance(std::string s_rotation, double wheel_diameter)
 {
-    double temp {double(s_rotation.get_position())};
+    double temp {double( s_rotation == "left" ? s_left_rotation.get_position() : s_right_rotation.get_position())};
     return temp/36000 * 3/7 * (wheel_diameter * MiscConstants::PI);
 }
 
@@ -67,8 +67,8 @@ double Pose_Estimator ::getInchesTraveled(pros::Rotation s_rotation, std::string
 
 double Pose_Estimator ::distanceCalc() 
 {   
-    return (getDistance(s_left_rotation, DrivetrainConstants::LEFT_TRACKING_DIAMETER) 
-        + getDistance(s_right_rotation, DrivetrainConstants::RIGHT_TRACKING_DIAMETER))/2;
+    return (getDistance("left", DrivetrainConstants::LEFT_TRACKING_DIAMETER) 
+        + getDistance("right", DrivetrainConstants::RIGHT_TRACKING_DIAMETER))/2;
 }
 
 void Pose_Estimator ::positionCalc()
@@ -138,10 +138,7 @@ bool Pose_Estimator::isYAxisAligned()
 
 double Pose_Estimator::getAngleToTarget()
 {
-    double tempNum = poseStruct.angle + 180;
-    double orientation = rearToTarget() 
-        ? (tempNum > 360 ? tempNum - 360 : tempNum) 
-        : poseStruct.angle;
+    double orientation = -poseStruct.angle;
         
     double angleToTarget;
 
@@ -163,9 +160,14 @@ double Pose_Estimator::getAngleToTarget()
 
     angleToTarget = atan2(x_pos_relative, y_pos_relative) - atan2(orientation_vector_x, orientation_vector_y);
 
+    if (rearToTarget()) 
+    {
+        angleToTarget = MiscConstants::PI + angleToTarget;
+    }
+
     if(fabs(angleToTarget) > MiscConstants::PI)
     {
-        angleToTarget -= copysign((2 * MiscConstants::PI), angleToTarget);
+        angleToTarget -= copysignf((2 * MiscConstants::PI), angleToTarget);
     }
 
     return angleToTarget * (180/MiscConstants::PI);
@@ -202,9 +204,9 @@ double Pose_Estimator ::getYPosition()
 void Pose_Estimator ::printTask() 
 {
     pros::lcd::print(1, "ORIENTATION: %f", getOrientation());
-	pros::lcd::print(2, "XPOSITION: %f", getXPosition());
-	pros::lcd::print(3, "YPOSITION: %f", getYPosition());
+	// pros::lcd::print(2, "XPOSITION: %f", getXPosition());
+	// pros::lcd::print(3, "YPOSITION: %f", getYPosition());
     pros::lcd::print(4, "ANGLE: %f", getAngleToTarget());
 	pros::lcd::print(5, "DISTANCE: %f", getDistanceToTarget());
-    pros::lcd::print(6, (isRobotPastTarget() ? "BOOLEAN BOOLEAN: true" : "BOOLEAN BOOLEAN: false"));
+    pros::lcd::print(6, (rearToTarget() ? "BOOLEAN BOOLEAN: true" : "BOOLEAN BOOLEAN: false"));
 }

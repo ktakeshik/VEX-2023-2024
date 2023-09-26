@@ -1,5 +1,10 @@
 #include "pid_controller.h"
 
+void PID_Controller::resetController() {
+    previousError = 0;
+    integral = 0;
+}
+
 void PID_Controller::setTolerance(float nativeUnits) {
     tolerance = {nativeUnits};
 }

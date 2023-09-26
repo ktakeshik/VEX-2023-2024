@@ -39,7 +39,7 @@ class Pose_Estimator {
     //Methods
     void zeroOutPosition();
 
-    double getDistance(pros::Rotation s_rotation, double wheel_diameter);
+    double getDistance(std::string s_rotation, double wheel_diameter);
 
     double getInchesTraveled(pros::Rotation s_rotation, std::string string, double wheel_diameter);
 

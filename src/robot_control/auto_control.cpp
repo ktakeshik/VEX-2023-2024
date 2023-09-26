@@ -49,6 +49,8 @@ void Autonomous_Control::turnToTarget(double min, double max)
 {
     double angleToTarget;
     double velocity;
+
+    rotationController.resetController();
     
     if(pose_Estimator.isRobotFacingTarget())
     {
@@ -76,6 +78,8 @@ void Autonomous_Control::moveToTarget(double min, double max)
     double velocity;
     double courseCorrection;
 
+    accelerationControllerL.resetController();
+
     if(pose_Estimator.isRobotAtTarget())
     {
         return;
@@ -83,8 +87,8 @@ void Autonomous_Control::moveToTarget(double min, double max)
 
     do
     {
-        accelerationController.setError(fabs(pose_Estimator.getDistanceToTarget()));
-        velocity = accelerationController.getOutput();
+        accelerationControllerL.setError(fabs(pose_Estimator.getDistanceToTarget()));
+        velocity = accelerationControllerL.getOutput();
         velocity /= 100;
         velocity = (velocity < min) ? min : ((velocity > max) ? max : velocity);
         velocity = copysign(velocity, pose_Estimator.getDistanceToTarget());
@@ -105,11 +109,12 @@ void Autonomous_Control::turnToAngle(double min, double max, double desiredAngle
 {
     double angleToTarget;
     double velocity;
-    double error = desiredAngle - pose_Estimator.getOrientation();;
+    double error = desiredAngle - pose_Estimator.getOrientation();
 
     while (fabs(error) > 1)
     {
-        rotationController.setError(fabs(error) > 180 ? error : error - copysign((360), error));
+        error = desiredAngle - pose_Estimator.getOrientation();
+        rotationController.setError(fabs(error) < 180 ? error : error - copysign((360), error));
         velocity = rotationController.getOutput();
         velocity /= 100;
         velocity = (velocity < min) ? min : ((velocity > max) ? max : velocity);
@@ -126,27 +131,38 @@ void Autonomous_Control::moveDistance(double min, double max, double desiredDist
 {
     double distanceToTarget;
     double currentDistance{s_Drivetrain.getLeftPost()};
+    double startingLeftPos{pose_Estimator.getDistance("left", 4)};
+    double startingRightPos{pose_Estimator.getDistance("right", 4)};
     double angleToTarget;
     double currentAngle{pose_Estimator.getOrientation()};
-    double velocity;
+    double velocityLeft;
+    double velocityRight;
     double courseCorrection;
 
     do 
     {
-        accelerationController.setError((desiredDistance + currentDistance) - s_Drivetrain.getLeftPost());
-        velocity = accelerationController.getOutput();
-        velocity /= 100;
-        velocity = (velocity < min) ? min : ((velocity > max) ? max : velocity);
-        velocity = copysign(velocity, accelerationController.getError());
+        accelerationControllerL.setError((desiredDistance + startingLeftPos) - pose_Estimator.getDistance("left", 4));
+        velocityLeft = accelerationControllerL.getOutput();
+        velocityLeft /= 100;
+        velocityLeft = (velocityLeft < min) ? min : ((velocityLeft > max) ? max : velocityLeft);
+        velocityLeft = copysign(velocityLeft, accelerationControllerL.getError());
 
-         rotationController.setError(pose_Estimator.getAngleToTarget());
-        courseCorrection = rotationController.getOutput()/100 * velocity;
+        accelerationControllerR.setError((desiredDistance + startingRightPos) - pose_Estimator.getDistance("right", 4));
+        velocityRight = accelerationControllerL.getOutput();
+        velocityRight /= 100;
+        velocityRight = (velocityRight < min) ? min : ((velocityRight > max) ? max : velocityRight);
+        velocityRight = copysign(velocityRight, accelerationControllerL.getError());
+
+        rotationController.setError(pose_Estimator.getAngleToTarget());
+        courseCorrection = rotationController.getOutput()/100 * (velocityLeft + velocityRight)/2;
         courseCorrection = copysign(courseCorrection, rotationController.getError());
 
-        s_Drivetrain.drivetrainControl(velocity + courseCorrection, velocity - courseCorrection);
+        s_Drivetrain.drivetrainControl(velocityLeft + courseCorrection, velocityRight - courseCorrection);
         pros::delay(20);
+        pros::lcd::print(2, "DESIRED_ANGLE: %f", accelerationControllerL.getError());
+        pros::lcd::print(2, "DESIRED_ANGLE: %f", accelerationControllerR.getError());
     }
-    while ((fullStop) ? accelerationController.getError() > 1 : !pose_Estimator.isRobotPastTarget());
+    while (fabs(accelerationControllerL.getError()) > 1 && fabs(accelerationControllerR.getError()) > 1);
 
     s_Drivetrain.stopControl();
 }
@@ -169,6 +185,11 @@ void Autonomous_Control::manueverToTarget(bool rotate, bool move)
 void Autonomous_Control::deployIntake(bool state)
 {
     s_Intake.setExtension(state);
+}
+
+void Autonomous_Control::deployExtension(bool state) 
+{
+    s_Drivetrain.setExtension(state);
 }
 
 void Autonomous_Control::setIntake(float percentOut)

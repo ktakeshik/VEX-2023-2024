@@ -21,6 +21,8 @@ class PID_Controller {
 
     public:
 
+    void resetController();
+
     void setTolerance(float nativeUnits);
 
     void setPGain(float kP);

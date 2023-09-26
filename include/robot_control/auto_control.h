@@ -13,7 +13,8 @@ class Autonomous_Control
 {
     private:
     PID_Controller rotationController;
-    PID_Controller accelerationController;
+    PID_Controller accelerationControllerR;
+    PID_Controller accelerationControllerL;
 
     float maxAcceleration;
     float previousSpeed;
@@ -41,10 +42,15 @@ class Autonomous_Control
         rotationController.setDGain(PIDConstants::K_ROTATION_D);
         rotationController.setFFGain(PIDConstants::K_ROTATION_FF);
 
-        accelerationController.setPGain(PIDConstants::K_ACCELERATION_P);
-        accelerationController.setIGain(PIDConstants::K_ACCELERATION_I);
-        accelerationController.setDGain(PIDConstants::K_ACCELERATION_D);
-        accelerationController.setFFGain(PIDConstants::K_ACCELERATION_FF);
+        accelerationControllerL.setPGain(PIDConstants::K_ACCELERATION_P);
+        accelerationControllerL.setIGain(PIDConstants::K_ACCELERATION_I);
+        accelerationControllerL.setDGain(PIDConstants::K_ACCELERATION_D);
+        accelerationControllerL.setFFGain(PIDConstants::K_ACCELERATION_FF);
+
+        accelerationControllerR.setPGain(PIDConstants::K_ACCELERATION_P);
+        accelerationControllerR.setIGain(PIDConstants::K_ACCELERATION_I);
+        accelerationControllerR.setDGain(PIDConstants::K_ACCELERATION_D);
+        accelerationControllerR.setFFGain(PIDConstants::K_ACCELERATION_FF);
 
         setRequirement(endRequirement::fullStop);
     };
@@ -70,6 +76,8 @@ class Autonomous_Control
     void manueverToTarget(bool rotate, bool move);
 
     void deployIntake(bool state);
+
+    void deployExtension(bool state);
 
     void setIntake(float percentOut);
 
