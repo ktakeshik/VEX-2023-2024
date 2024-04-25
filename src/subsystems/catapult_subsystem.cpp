@@ -12,6 +12,7 @@ Catapult_Subsystem::Catapult_Subsystem ()
     m_catapult_configurator.set_brake_mode(CatapultConstants::M_CATAPULT_BRAKE_MODE);
 
     s_rotation.set_reversed(CatapultConstants::S_ROTATION_REVERSED);
+    s_rotation.set_data_rate(5);
 
     setCatapultState(Catapult_Subsystem::STAY_UP);
     setSaftey(true);

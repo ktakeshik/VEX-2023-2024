@@ -75,6 +75,8 @@ class Pose_Estimator {
 
     double getDistanceTraveled();
 
+    double getHeading();
+
     double getOrientation();
 
     double getXPosition();

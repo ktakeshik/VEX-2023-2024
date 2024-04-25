@@ -19,6 +19,8 @@ class Autonomous_Control
     float maxAcceleration;
     float previousSpeed;
 
+    double timeStarted;
+
     public:
 
     float turnMin, turnMax, driveMin, driveMax;
@@ -54,6 +56,12 @@ class Autonomous_Control
 
         setRequirement(endRequirement::fullStop);
     };
+
+    void startTimer(double timeStarted);
+
+    double getTimeSeconds();
+
+    double getTimeMilliseconds();
     
     void setTarget(double x_pos, double y_pos, bool value);
 
@@ -66,6 +74,8 @@ class Autonomous_Control
     void turnToTarget(double min, double max);
 
     void moveToTarget(double min, double max);
+
+    void turnToHeading(double min, double max, double desiredAngle);
 
     void turnToAngle(double min, double max, double desiredAngle);
 

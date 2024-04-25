@@ -7,6 +7,9 @@
 #include "robot_control/auto_paths.h"
 #include "robot_control/pose_estimator.h"
 #include "robot_control/teleop_control.h"
+#include "robot_container.h"
+
+
 
 Catapult_Subsystem s_Catapult;
 Drivetrain_Subsystem s_Drivetrain;
@@ -14,9 +17,10 @@ Elevation_Subsystem s_Elevation;
 Intake_Subsystem s_Intake;
 Pose_Estimator s_Pose;
 
+// Robot_Container container;
+
 Autonomous_Control s_AutoControl = Autonomous_Control(s_Catapult, s_Drivetrain, s_Elevation, s_Intake, s_Pose);
 Autonomous_Paths r_Auto = Autonomous_Paths(s_AutoControl);
-
 Teleoperation_Control r_Teleop = Teleoperation_Control(s_Catapult, s_Drivetrain, s_Elevation, s_Intake);
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -26,6 +30,7 @@ Teleoperation_Control r_Teleop = Teleoperation_Control(s_Catapult, s_Drivetrain,
  */
 void initialize() 
 {
+
 	pros::lcd::initialize();
 	s_Pose.zeroOutPosition();
 	
@@ -92,7 +97,8 @@ void competition_initialize() {}
  */
 void autonomous() 
 {
-	r_Auto.setAutoPath(Autonomous_Paths::TESTING);
+	r_Auto.setAutoPath(Autonomous_Paths::SKILLS_PATH);
+	r_Auto.setAutoWP(false);
 	s_Pose.zeroOutPosition();
 
 	switch (r_Auto.getAutoPath()) 
@@ -102,18 +108,45 @@ void autonomous()
 		
 		case Autonomous_Paths::TESTING:
 		r_Auto.test();
-		break;
-
+		break;               
+	
 		case Autonomous_Paths::LEFT_PATH:
-		r_Auto.leftPath();
+		if (r_Auto.getAutoWP())
+		{
+			r_Auto.leftPathWP();
+		} 
+		else 
+		{
+			r_Auto.leftPathFM();
+		}
+		
 		break;
 
 		case Autonomous_Paths::RIGHT_PATH:
-		r_Auto.rightPath();
+		if (r_Auto.getAutoWP())
+		{
+			r_Auto.rightPathWP();
+		} 
+		else 
+		{
+			r_Auto.rightPathFM();
+		}
+		break;
+
+		case Autonomous_Paths::SPECIAL_LEFT_PATH:
+		r_Auto.leftPathSpecial();
 		break;
 
 		case Autonomous_Paths::SKILLS_PATH:
 		r_Auto.skillsPath();
+		break;
+
+		case Autonomous_Paths::STATES_RIGHT_PATH:
+		r_Auto.statesrightPathFM();
+		break;
+
+		case Autonomous_Paths::STATES_LEFT_PATH:
+		r_Auto.statesleftPathFM();
 		break;
 	}
 }
@@ -134,6 +167,13 @@ void autonomous()
 void opcontrol() {
 	pros::Task teleOp{[] 
 	{
-		r_Teleop.teleopControl();
+		pros::Controller master(pros::E_CONTROLLER_MASTER);
+		
+		while (true) {
+			// container.testLoop(master);
+			// container.run();
+			pros::delay(20);
+			r_Teleop.teleopControl();
+		}
 	}};
 }

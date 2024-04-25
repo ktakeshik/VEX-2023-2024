@@ -2,17 +2,13 @@
 
 void Teleoperation_Control::catapultControl()
 {
-    if (!s_Intake.getExtension()) 
-    {
-        return;
-    }
 
     switch (s_Catapult.getCatapultState()) 
     {
         case Catapult_Subsystem::DEFAULT_STATE:
             while (!s_Catapult.isCatapultDown()) 
             {
-                s_Catapult.catapultControl(0.86);
+                s_Catapult.catapultControl(.8);
                 pros::delay(20);
             }
             s_Catapult.stopCatapult();
@@ -21,7 +17,7 @@ void Teleoperation_Control::catapultControl()
         case Catapult_Subsystem::LAUNCH_TRIBALL:
             while (!s_Catapult.isCatapultUp()) 
             {
-                s_Catapult.catapultControl(1);
+                s_Catapult.catapultControl(0.6);
                 pros::delay(20);
             }
             s_Catapult.stopCatapult();
@@ -30,7 +26,7 @@ void Teleoperation_Control::catapultControl()
         case Catapult_Subsystem::POSSESS_TRIBALL:
             while (!s_Catapult.isCatapultMiddle()) 
             {
-                s_Catapult.catapultControl(0.45);
+                s_Catapult.catapultControl(.8);
                 pros::delay(20);
             }
             s_Catapult.stopCatapult();
@@ -83,11 +79,11 @@ void Teleoperation_Control::teleopControl()
         * 
         ********************************************************************/
         
-        if (master.get_digital(DIGITAL_L1)) 
+        if (master.get_digital(DIGITAL_L1) && s_Intake.getExtension()) 
         {
             s_Intake.intakeControl(1);
         }
-        else if (master.get_digital(DIGITAL_L2)) 
+        else if (master.get_digital(DIGITAL_L2) && s_Intake.getExtension()) 
         {
             s_Intake.intakeControl(-1);
         }

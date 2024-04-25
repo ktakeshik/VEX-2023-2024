@@ -73,7 +73,7 @@ double Pose_Estimator ::distanceCalc()
 
 void Pose_Estimator ::positionCalc()
 {
-    poseStruct.angle = s_inertial.get_heading() * (MiscConstants::PI/180);
+    poseStruct.angle = s_inertial.get_rotation() * (MiscConstants::PI/180);
 
     poseStruct.distance_traveled = distanceCalc();
     poseStruct.change_in_angle = poseStruct.angle - previous_angle;
@@ -184,6 +184,11 @@ double Pose_Estimator ::getDistanceToTarget()
 double Pose_Estimator ::getDistanceTraveled() 
 {
     return poseStruct.distance_traveled;
+}
+
+double Pose_Estimator::getHeading()
+{
+    return s_inertial.get_heading();
 }
 
 double Pose_Estimator ::getOrientation()

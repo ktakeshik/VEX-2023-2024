@@ -2,8 +2,9 @@
 #define INTAKE_SUBSYSTEM_H
 #include "main.h"
 #include "Constants.h"
+#include "aSClib\subsystem_base.h"
 
-class Intake_Subsystem {
+class Intake_Subsystem : public Subsystem_Base {
     private:
     //Motors
     pros::Motor m_intake;
@@ -25,6 +26,10 @@ class Intake_Subsystem {
     void intakeControl(float percentOut);
 
     void printTask();
+
+    void periodic() override;
+
+    void shutdown() override;
 };
 
 #endif

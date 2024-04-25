@@ -2,38 +2,44 @@
 #define CONSTANTS_H
 #include "main.h"
 
+namespace OperatorConstants {
+    const pros::controller_digital_e_t INTAKE_FORWARD = pros::controller_digital_e_t::E_CONTROLLER_DIGITAL_L1;
+    const pros::controller_digital_e_t INTAKE_REVERSE = pros::controller_digital_e_t::E_CONTROLLER_DIGITAL_L2;
+
+}
+
 namespace MiscConstants {
     const double PI {3.14159265358979323846};
 }
 
 namespace PIDConstants {
-    const float K_ROTATION_P {0.00625};
-    const float K_ROTATION_I {0.00001};
-    const float K_ROTATION_D {0}; 
+    const float K_ROTATION_P {0.7};
+    const float K_ROTATION_I {0.0000};
+    const float K_ROTATION_D {0.5}; 
     const float K_ROTATION_FF {0};
 
-    const float K_ACCELERATION_P {2};
-    const float K_ACCELERATION_I {0.025};
-    const float K_ACCELERATION_D {0};
+    const float K_ACCELERATION_P {100};
+    const float K_ACCELERATION_I {0};
+    const float K_ACCELERATION_D {20};
     const float K_ACCELERATION_FF {0};
 }
 
 namespace DrivetrainConstants 
 {
     //Motors
-    const int MP_LEFT_FRONT {16};
+    const int MP_LEFT_FRONT {13};
     const int MP_LEFT_REAR {12};
     const int MP_LEFT_EXT {11};
-    const int MP_RIGHT_FRONT {18};
-    const int MP_RIGHT_REAR {19};
+    const int MP_RIGHT_FRONT {17};
+    const int MP_RIGHT_REAR {18};
     const int MP_RIGHT_EXT {20};
 
     const bool M_LEFT_FRONT_REVERSED {true};
     const bool M_LEFT_REAR_REVERSED {true};
     const bool M_LEFT_EXT_REVERSED {false};
-    const bool M_RIGHT_FRONT_REVERSED {true};
+    const bool M_RIGHT_FRONT_REVERSED {false};
     const bool M_RIGHT_REAR_REVERSED {true};
-    const bool M_RIGHT_EXT_REVERSED {true};
+    const bool M_RIGHT_EXT_REVERSED {false};
 
     const bool MG_LEFT_REVERSED {true};
     const bool MG_RIGHT_REVERSED {false};
@@ -44,7 +50,7 @@ namespace DrivetrainConstants
     //Sensors
     const char SP_FLAPS {'A'};
 
-    const int SP_LEFT_ROTATION {2};
+    const int SP_LEFT_ROTATION {3};
     const int SP_RIGHT_ROTATION {9};
     // const int SP_HORIZONTAL_ROTATION = 7;
 
@@ -78,10 +84,10 @@ namespace CatapultConstants
     const int SP_ROTATION {6};
     const bool S_ROTATION_REVERSED {false};
 
-    const float CATAPULT_MINIMUM_ANGLE {30300};
-    const float CATAPUL_MAXIMUM_ANGLE {29074};
+    const float CATAPULT_MINIMUM_ANGLE {30600};  
+    const float CATAPUL_MAXIMUM_ANGLE {29700};
 
-    const float CATAPULT_MID_MIN_ANGLE {32000};
+    const float CATAPULT_MID_MIN_ANGLE {31900};
     const float CATAPUL_MID_MAX_ANGLE {31000};
 
     const float CATAPULT_UP_ANGLE {34000};

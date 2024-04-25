@@ -5,18 +5,36 @@
 #include "auto_control.h"
 
 class Autonomous_Paths {
+    private:
+
+    bool autoWP;
+
     public:
     Autonomous_Paths(Autonomous_Control& autonomous_Control): r_Auto(autonomous_Control){};
     
-    enum auto_path {NONE, TESTING, LEFT_PATH, RIGHT_PATH, SKILLS_PATH};
+    enum auto_path {NONE, TESTING, LEFT_PATH, RIGHT_PATH, SKILLS_PATH, SPECIAL_LEFT_PATH, STATES_LEFT_PATH, STATES_RIGHT_PATH};
+
+    void setAutoWP(bool value);
+
+    bool getAutoWP();
 
     void test();
 
-    void leftPath();
+    void leftPathWP();
 
-    void rightPath();
+    void leftPathSpecial();
+
+    void leftPathFM();
+
+    void rightPathWP();
+
+    void rightPathFM();
 
     void skillsPath();
+
+    void statesleftPathFM();
+
+    void statesrightPathFM();
 
     void setAutoPath(auto_path desiredPath);
 

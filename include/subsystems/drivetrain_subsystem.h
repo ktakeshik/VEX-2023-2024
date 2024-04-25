@@ -18,6 +18,7 @@ class Drivetrain_Subsystem {
     
     //Sensors
     pros::ADIDigitalOut s_flaps_extension;
+    pros::Imu s_inertial;
 
     //Variables
     bool isFlapsExtended;
@@ -32,6 +33,10 @@ class Drivetrain_Subsystem {
     double getLeftPost();
 
     double getRightPost();
+
+    double getPitch();
+
+    double getAccel();
     
     bool getExtension();
 

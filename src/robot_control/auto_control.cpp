@@ -1,5 +1,17 @@
 #include "robot_control/auto_control.h"
 
+void Autonomous_Control::startTimer(double timeStarted) {
+    this->timeStarted = timeStarted;
+}
+
+double Autonomous_Control::getTimeSeconds() {
+    return (pros::c::millis() - timeStarted)/100;
+}
+
+double Autonomous_Control::getTimeMilliseconds() {
+    return pros::c::millis() - timeStarted;
+}
+
 void Autonomous_Control::setTarget(double x_pos, double y_pos, bool value)
 {
     pose_Estimator.setTarget(x_pos, y_pos);
@@ -105,20 +117,44 @@ void Autonomous_Control::moveToTarget(double min, double max)
     s_Drivetrain.stopControl();
 }
 
-void Autonomous_Control::turnToAngle(double min, double max, double desiredAngle) 
+void Autonomous_Control::turnToHeading(double min, double max, double desiredAngle)
 {
-    double angleToTarget;
     double velocity;
-    double error = desiredAngle - pose_Estimator.getOrientation();
+    double error = desiredAngle - pose_Estimator.getHeading();
 
     while (fabs(error) > 1)
     {
-        error = desiredAngle - pose_Estimator.getOrientation();
-        rotationController.setError(fabs(error) < 180 ? error : error - copysign((360), error));
+        error = desiredAngle - pose_Estimator.getHeading();
+        error = fabs(error) > 180 ? error - copysign(360, error) : error;
+        rotationController.setError(fabs(error));
         velocity = rotationController.getOutput();
         velocity /= 100;
         velocity = (velocity < min) ? min : ((velocity > max) ? max : velocity);
-        velocity = copysign(velocity, rotationController.getError());
+        velocity = copysign(velocity, error);
+        pros::lcd::print(2, "RIGHTMG: %f", error);
+        pros::lcd::print(3, "RIGHTMG: %f", velocity);
+
+        s_Drivetrain.drivetrainControl(velocity, -velocity);
+        pros::delay(20);
+    }
+
+    s_Drivetrain.stopControl();
+}
+
+void Autonomous_Control::turnToAngle(double min, double max, double desiredAngle) 
+{
+    double velocity;
+    double target = pose_Estimator.getOrientation() + desiredAngle;
+    double error = target - pose_Estimator.getOrientation();
+
+    while (fabs(error) > 1)
+    {
+        error = target - pose_Estimator.getOrientation();
+        rotationController.setError(fabs(error));
+        velocity = rotationController.getOutput();
+        velocity /= 100;
+        velocity = (velocity < min) ? min : ((velocity > max) ? max : velocity);
+        velocity = copysign(velocity, error);
 
         s_Drivetrain.drivetrainControl(velocity, -velocity);
         pros::delay(20);
@@ -129,40 +165,35 @@ void Autonomous_Control::turnToAngle(double min, double max, double desiredAngle
 
 void Autonomous_Control::moveDistance(double min, double max, double desiredDistance)
 {
-    double distanceToTarget;
     double currentDistance{s_Drivetrain.getLeftPost()};
-    double startingLeftPos{pose_Estimator.getDistance("left", 4)};
-    double startingRightPos{pose_Estimator.getDistance("right", 4)};
-    double angleToTarget;
-    double currentAngle{pose_Estimator.getOrientation()};
+    double desiredLeftPos{desiredDistance + pose_Estimator.getDistance("left", 4)};
+    double desiredRightPos{desiredDistance + pose_Estimator.getDistance("right", 4)};
+    double leftPosError{desiredLeftPos - pose_Estimator.getDistance("left", 4)};
+    double rightPosError{desiredRightPos - pose_Estimator.getDistance("right", 4)};
     double velocityLeft;
     double velocityRight;
     double courseCorrection;
 
     do 
     {
-        accelerationControllerL.setError((desiredDistance + startingLeftPos) - pose_Estimator.getDistance("left", 4));
+        leftPosError = {desiredLeftPos - pose_Estimator.getDistance("left", 4)};
+        rightPosError = {desiredRightPos - pose_Estimator.getDistance("right", 4)};
+
+        accelerationControllerL.setError(fabs(leftPosError));
         velocityLeft = accelerationControllerL.getOutput();
         velocityLeft /= 100;
         velocityLeft = (velocityLeft < min) ? min : ((velocityLeft > max) ? max : velocityLeft);
-        velocityLeft = copysign(velocityLeft, accelerationControllerL.getError());
+        velocityLeft = copysign(velocityLeft, leftPosError);
 
-        accelerationControllerR.setError((desiredDistance + startingRightPos) - pose_Estimator.getDistance("right", 4));
-        velocityRight = accelerationControllerL.getOutput();
+        accelerationControllerR.setError(fabs(rightPosError));
+        velocityRight = accelerationControllerR.getOutput();
         velocityRight /= 100;
         velocityRight = (velocityRight < min) ? min : ((velocityRight > max) ? max : velocityRight);
-        velocityRight = copysign(velocityRight, accelerationControllerL.getError());
+        velocityRight = copysign(velocityRight, rightPosError);
 
-        rotationController.setError(pose_Estimator.getAngleToTarget());
-        courseCorrection = rotationController.getOutput()/100 * (velocityLeft + velocityRight)/2;
-        courseCorrection = copysign(courseCorrection, rotationController.getError());
-
-        s_Drivetrain.drivetrainControl(velocityLeft + courseCorrection, velocityRight - courseCorrection);
-        pros::delay(20);
-        pros::lcd::print(2, "DESIRED_ANGLE: %f", accelerationControllerL.getError());
-        pros::lcd::print(2, "DESIRED_ANGLE: %f", accelerationControllerR.getError());
+        s_Drivetrain.drivetrainControl(velocityLeft, velocityRight);
     }
-    while (fabs(accelerationControllerL.getError()) > 1 && fabs(accelerationControllerR.getError()) > 1);
+    while (fabs(leftPosError) > 1 && fabs(rightPosError) > 1);
 
     s_Drivetrain.stopControl();
 }

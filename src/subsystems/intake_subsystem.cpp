@@ -43,3 +43,11 @@ void Intake_Subsystem::printTask()
 	// pros::lcd::print(2, "RIGHTMG: %f", m_right_rear.get_actual_velocity());
 }
 
+void Intake_Subsystem::shutdown() {
+    intakeControl(0);
+}
+
+void Intake_Subsystem::periodic() {
+    // intakeControl(1);
+}
+
